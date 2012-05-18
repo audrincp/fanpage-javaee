@@ -1,5 +1,5 @@
 package corejsf;
-import com.sun.xml.rpc.processor.modeler.j2ee.xml.javaIdentifierType;
+//import com.sun.xml.rpc.processor.modeler.j2ee.xml.javaIdentifierType;
 import java.sql.*;
 import javax.sql.*;
 import java.util.Locale;
@@ -49,22 +49,4 @@ public class DBController {
         }
         return null;
     }
-	/**
-	 * экранирование кавычек и переводов строк
-	 */
-	public static String escapeQuotes (String s) {
-		StringBuffer str = new StringBuffer ();
-		for (int i = 0; i < s.length (); ++ i) {
-			char c = s.charAt (i);
-			if (c == '\"')
-				str.append ("&quot;");
-			else if (c == '\'')
-				str.append ("&#39");
-			else if (c == '\n')
-				str.append ("<br />");
-			else if (c != '\r')
-				str.append (c);
-		}
-		return str.toString ();
-	}
 }

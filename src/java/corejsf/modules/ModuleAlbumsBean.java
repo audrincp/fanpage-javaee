@@ -8,17 +8,16 @@ import java.sql.*;
 import corejsf.*;
 import java.util.ArrayList;
 
-@Named("module_labels")
+@Named("module_albums")
 @SessionScoped
-public class ModuleLabelsBean implements Serializable {
+public class ModuleAlbumsBean implements Serializable {
 	
-	private final String tableName = "label";
+	private final String tableName = "albums";
 
     public String[] getTableFields () {
-		String[] arr = new String[3];
+		String[] arr = new String[2];
 		arr[0] = "Название";
-		arr[1] = "Страна";
-		arr[2] = "Местоположение";
+		arr[1] = "Дата выхода";
 		return arr;
     }
 
@@ -32,14 +31,12 @@ public class ModuleLabelsBean implements Serializable {
 			
 			ArrayList items = new ArrayList ();
 			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 3, 4);
+				Item item = new Item (result.getInt ("id"), 2, 3);
 				item.setPublicValue (0, result.getString ("name"));
-				item.setPublicValue (1, result.getString ("country"));
-				item.setPublicValue (2, result.getString ("place"));
+				item.setPublicValue (1, Utils.toNormDate (result.getString ("released")));
 				item.setEditValue (0, result.getString ("name"));
-				item.setEditValue (1, result.getString ("country"));
-				item.setEditValue (2, result.getString ("place"));
-				item.setEditValue (3, result.getString ("description"));
+				item.setEditValue (1, Utils.toNormDate (result.getString ("released")));
+				item.setEditValue (2, result.getString ("description"));
 				items.add (item);
 			}
 			
@@ -63,30 +60,23 @@ public class ModuleLabelsBean implements Serializable {
             itemId = 0;
         }
     }
-
+    
     private String itemName;
     public String getEditName ()           {   return "";   }
     public void setEditName (String value) {   itemName = Utils.escapeQuotes (value);  }
-
-    private String itemCountry;
-    public String getEditCountry ()           {   return "";   }
-    public void setEditCountry (String value) {   itemCountry = Utils.escapeQuotes (value);  }
-
-    private String itemPlace;
-    public String getEditPlace ()           {   return "";   }
-    public void setEditPlace (String value) {   itemPlace = Utils.escapeQuotes (value);  }
-
+    private String itemReleased;
+    public String getEditReleased ()           {   return "";   }
+    public void setEditReleased (String value) {   itemReleased = Utils.escapeQuotes (value);  }
     private String itemDescription;
     public String getEditDescription ()           {   return "";   }
     public void setEditDescription (String value) {   itemDescription = Utils.escapeQuotes (value);  }
-    
-    public ModuleLabelsBean() {
+	    
+    public ModuleAlbumsBean() {
         itemId = 0;
-        itemName = "";
-        itemCountry = "";
-        itemPlace = "";
-        itemDescription = "";
-    }
+				itemName = "";
+				itemReleased = "";
+				itemDescription = "";
+		    }
 	
     public String remove (int id) {
 		try {
@@ -106,12 +96,11 @@ public class ModuleLabelsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " INSERT INTO " + tableName + 
-						 " (name, country, place, description) VALUES (?, ?, ?, ?) ";
+						 " (name, released, description) VALUES (?, to_date(?,'DD.MM.YYYY'), ?) ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
 			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemCountry);
-			prepareStatement.setString (3, itemPlace);
-			prepareStatement.setString (4, itemDescription);
+			prepareStatement.setDate (2, Date.valueOf (itemReleased));
+			prepareStatement.setString (3, itemDescription);
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
@@ -123,14 +112,13 @@ public class ModuleLabelsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " UPDATE " + tableName + " SET " + 
-						 " name=?, country=?, place=?, description=? " + 
+						 " name=?, released=to_date(?,'DD.MM.YYYY'), description=? " + 
 						 " WHERE id=? ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
 			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemCountry);
-			prepareStatement.setString (3, itemPlace);
-			prepareStatement.setString (4, itemDescription);
-			prepareStatement.setString (5, itemId + "");
+			prepareStatement.setString (2, itemReleased);
+			prepareStatement.setString (3, itemDescription);
+			prepareStatement.setString (4, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
@@ -139,10 +127,10 @@ public class ModuleLabelsBean implements Serializable {
 		}
 	}
     public String save () {
-		if (itemId == 0)
-			addItem ();
-		else
-			updateItem ();
+        if (itemId == 0)
+            addItem ();
+        else
+            updateItem ();
 		
         return null;
     }
