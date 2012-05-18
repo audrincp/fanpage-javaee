@@ -6,9 +6,6 @@
     <h:head><title>Title</title></h:head>
     <h:body>
         <ui:composition template="./templates/module.xhtml">
-			<ui:define name="css">
-				<link type="text/css" rel="stylesheet" href="./resources/css/pages/labels.css"/>
-			</ui:define>
 			<ui:define name="title">
 				Лейблы
             </ui:define>
@@ -22,7 +19,7 @@
 					</script>
 				</h:form>
 				<div rendered="#{login.isLogged}">
-					<table class="table table-bordered">
+					<table class="table table-bordered data">
 						<thead>
 							<tr>
 								<ui:repeat value="#{module_labels.tableFields}" var="field">
@@ -34,9 +31,9 @@
 						<tbody>
 							<ui:repeat value="#{module_labels.tableItems}" var="item">
 								<tr>
-									<td><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
-									<td><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
-									<td><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>
 									<td>
 										<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}', '#{item.getEditValue(3)}'); return false;"></button>
 										<h:form class="_inline">
@@ -76,7 +73,7 @@
 								</tr>
 								<tr>
 									<td>Описание</td>
-									<td><h:inputTextarea value="#{module_labels.editDescription}" /></td>
+									<td><textarea jsfc="h:inputTextarea" value="#{module_labels.editDescription}" /></td>
 								</tr>
 							</tbody>
 						</table>
