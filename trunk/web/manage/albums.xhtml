@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head><title>Title</title></h:head>
     <h:body>
@@ -16,62 +17,69 @@
 					</script>
 				</h:form>
 				<div rendered="#{login.isLogged}">
-					<table class="table table-bordered data">
-						<thead>
-							<tr>
-								<ui:repeat value="#{module_albums.tableFields}" var="field">
-									<th><p jsfc="h:outputText" value="#{field}" /></th>
-								</ui:repeat>
-								<th width="70px;"></th>
-							</tr>
-						</thead>
-						<tbody>
-							<ui:repeat value="#{module_albums.tableItems}" var="item">
-								<tr>
-																		<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
-																		<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
-																		<td>
-										<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}'); return false;"></button>
-										<h:form class="_inline">
-											<input type="submit" value="&#x2A2F;" name="remove" class="btn btn-danger icon-remove my-icon-remove" jsfc="h:commandButton" action="#{module_albums.remove(item.getId())}" onclick="if(confirm('Удалить? Восстановление будет невозможно!')) return true; else return false;" />
-										</h:form>
-									</td>
-								</tr>
-							</ui:repeat>
-						</tbody>
-					</table>
-					<button class="btn btn-success" id="add-entity">Добавить альбом</button>
-					<div style="height: 10px;"></div>
-					<h:form class="form form-add-edit" id="add_edit_form" style="display: none;">
-						<table class="table table-bordered">
+					<h:form>
+						<h:selectOneMenu styleClass="select_group" value="#{module_albums.group}">
+							<f:selectItems value="#{module_albums.groups}" />
+						</h:selectOneMenu>
+					</h:form>
+					<div rendered="#{module_albums.isSelectGroup}">
+						<table class="table table-bordered data">
 							<thead>
 								<tr>
-									<th>Поле</th>
-									<th>Значение</th>
+									<ui:repeat value="#{module_albums.tableFields}" var="field">
+										<th><p jsfc="h:outputText" value="#{field}" /></th>
+									</ui:repeat>
+									<th width="70px;"></th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr style="display: none;">
-									<td>ID</td>
-									<td><input class="item_id" type="hidden" jsfc="h:inputHidden" value="#{module_albums.editId}" /></td>
-								</tr>
-																<tr>
-									<td>Название</td>
-																		<td><input type="text" jsfc="h:inputText" value="#{module_albums.editName}" /></td>
-																	</tr>
-																<tr>
-									<td>Дата выхода</td>
-																		<td><input class="datepicker" type="text" jsfc="h:inputText" value="#{module_albums.editReleased}" /></td>
-																	</tr>
-																<tr>
-									<td>Описание</td>
-																		<td><textarea jsfc="h:inputTextarea" value="#{module_albums.editDescription}" /></td>
-																	</tr>
-															</tbody>
+								<ui:repeat value="#{module_albums.tableItems}" var="item">
+									<tr>
+										<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
+										<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
+										<td>
+											<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}'); return false;"></button>
+											<h:form class="_inline">
+												<input type="submit" value="&#x2A2F;" name="remove" class="btn btn-danger icon-remove my-icon-remove" jsfc="h:commandButton" action="#{module_albums.remove(item.getId())}" onclick="if(confirm('Удалить? Восстановление будет невозможно!')) return true; else return false;" />
+											</h:form>
+										</td>
+									</tr>
+								</ui:repeat>
+							</tbody>
 						</table>
-						<button class="btn btn-primary save-button" value="Сохранить" jsfc="h:commandButton" action="#{module_albums.save}" />
-						<button class="btn btn-warning" id="cancel-edit">Отмена</button>
-					</h:form>
+						<button class="btn btn-success" id="add-entity">Добавить альбом</button>
+						<div style="height: 10px;"></div>
+						<h:form class="form form-add-edit" id="add_edit_form" style="display: none;">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Поле</th>
+										<th>Значение</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr style="display: none;">
+										<td>ID</td>
+										<td><input class="item_id" type="hidden" jsfc="h:inputHidden" value="#{module_albums.editId}" /></td>
+									</tr>
+																	<tr>
+										<td>Название</td>
+																			<td><input type="text" jsfc="h:inputText" value="#{module_albums.editName}" /></td>
+																		</tr>
+																	<tr>
+										<td>Дата выхода</td>
+																			<td><input class="datepicker" type="text" jsfc="h:inputText" value="#{module_albums.editReleased}" /></td>
+																		</tr>
+																	<tr>
+										<td>Описание</td>
+																			<td><textarea jsfc="h:inputTextarea" value="#{module_albums.editDescription}" /></td>
+																		</tr>
+																</tbody>
+							</table>
+							<button class="btn btn-primary save-button" value="Сохранить" jsfc="h:commandButton" action="#{module_albums.save}" />
+							<button class="btn btn-warning" id="cancel-edit">Отмена</button>
+						</h:form>
+					</div>
 				</div>
             </ui:define>
         </ui:composition>

@@ -1,9 +1,28 @@
+jQuery(function($){
+	$.datepicker.regional['ru'] = {
+		/*closeText: 'Закрыть',
+		prevText: '&#x3c;Пред',
+		nextText: 'След&#x3e;',
+		currentText: 'Сегодня',
+		monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь', 'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+		monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'],
+		dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+		dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+		dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+		weekHeader: 'Нед',*/
+		dateFormat: 'dd.mm.yy',
+		firstDay: 1,
+		isRTL: false,
+		showMonthAfterYear: false,
+		yearSuffix: ''};
+	$.datepicker.setDefaults($.datepicker.regional['ru']);
+});
 $(document).ready (function () {
 	
 	$('#add-entity').click (function () {
 		$('#add_edit_form table tbody tr td:last-child').each (function (index) {
 			$(this).children ().val ('');
-			$(this).children ().text ('');
+			$(this).children ('textarea').text ('');
 		});	
 		$('#add-entity').hide ();
 		$('#add_edit_form').show ();
@@ -19,6 +38,12 @@ $(document).ready (function () {
 	//setTimeout ("htmlentity ();", 1000);
 	htmlentity ();
 	
+	$('.select_group').change (function () {
+		$(this).parent ().submit ();
+	});
+	
+	$('.datepicker').datepicker ();
+	
 });
 function edit () {
 	var global_arguments = arguments;
@@ -28,7 +53,7 @@ function edit () {
 		str = str.split ("<br />"). join ("\n");
 		str = str.split ("&quot;"). join ("\"");
 		$(this).children ().val (str);
-		$(this).children ().text (str);
+		$(this).children ('textarea').text (str);
 	});
 	$('#add-entity').hide ();
 	$('#add_edit_form').show ();

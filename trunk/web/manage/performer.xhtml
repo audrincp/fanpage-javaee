@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head><title>Title</title></h:head>
+    <h:body>
+        <ui:composition template="./templates/module.xhtml">
+			<ui:define name="title">
+				Исполнители            </ui:define>
+            <ui:define name="header">
+				Исполнители            </ui:define>
+			<ui:define name="content">
+				<h:form rendered="#{!login.isLogged}">
+					<script type="text/javascript">
+						window.location.href = "./login.xhtml";
+					</script>
+				</h:form>
+				<div rendered="#{login.isLogged}">
+					<table class="table table-bordered data">
+						<thead>
+							<tr>
+								<ui:repeat value="#{module_performer.tableFields}" var="field">
+									<th><p jsfc="h:outputText" value="#{field}" /></th>
+								</ui:repeat>
+								<th width="70px;"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<ui:repeat value="#{module_performer.tableItems}" var="item">
+								<tr>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(3)}" /></td>
+									<td>
+										<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}', '#{item.getEditValue(3)}', '#{item.getEditValue(4)}', '#{item.getEditValue(5)}', '#{item.getEditValue(6)}', '#{item.getEditValue(7)}', '#{item.getEditValue(8)}'); return false;"></button>
+										<h:form class="_inline">
+											<input type="submit" value="&#x2A2F;" name="remove" class="btn btn-danger icon-remove my-icon-remove" jsfc="h:commandButton" action="#{module_performer.remove(item.getId())}" onclick="if(confirm('Удалить? Восстановление будет невозможно!')) return true; else return false;" />
+										</h:form>
+									</td>
+								</tr>
+							</ui:repeat>
+						</tbody>
+					</table>
+					<button class="btn btn-success" id="add-entity">Добавить исполнителя</button>
+					<div style="height: 10px;"></div>
+					<h:form class="form form-add-edit" id="add_edit_form" style="display: none;">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Поле</th>
+									<th>Значение</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr style="display: none;">
+									<td>ID</td>
+									<td><input class="item_id" type="hidden" jsfc="h:inputHidden" value="#{module_performer.editId}" /></td>
+								</tr>
+								<tr>
+									<td>Имя</td>
+										<td><input type="text" jsfc="h:inputText" value="#{module_performer.editName}" /></td>
+									</tr>
+								<tr>
+								<td>Фамилия</td>
+										<td><input type="text" jsfc="h:inputText" value="#{module_performer.editSurname}" /></td>
+									</tr>
+								<tr>
+									<td>Отчество</td>
+										<td><input type="text" jsfc="h:inputText" value="#{module_performer.editPatronymic}" /></td>
+									</tr>
+								<tr>
+									<td>Дата рождения</td>
+										<td><input class="datepicker" type="text" jsfc="h:inputText" value="#{module_performer.editBornDate}" /></td>
+									</tr>
+								<tr>
+									<td>Пол</td>
+										<td><input type="text" jsfc="h:inputText" value="#{module_performer.editSex}" /></td>
+									</tr>
+								<tr>
+									<td>Место рождения</td>
+										<td><input type="text" jsfc="h:inputText" value="#{module_performer.editBornPlace}" /></td>
+									</tr>
+								<tr>
+									<td>Страна</td>
+										<td><input type="text" jsfc="h:inputText" value="#{module_performer.editCountry}" /></td>
+									</tr>
+								<tr>
+									<td>Дата смерти</td>
+										<td><input class="datepicker" type="text" jsfc="h:inputText" value="#{module_performer.editDeath}" /></td>
+									</tr>
+								<tr>
+									<td>Описание</td>
+									<td><textarea jsfc="h:inputTextarea" value="#{module_performer.editDescription}" /></td>
+								</tr>
+						</tbody>
+						</table>
+						<button class="btn btn-primary save-button" value="Сохранить" jsfc="h:commandButton" action="#{module_performer.save}" />
+						<button class="btn btn-warning" id="cancel-edit">Отмена</button>
+					</h:form>
+				</div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
