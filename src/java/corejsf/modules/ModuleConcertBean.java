@@ -8,17 +8,17 @@ import java.sql.*;
 import corejsf.*;
 import java.util.ArrayList;
 
-@Named("module_groups")
+@Named("module_concert")
 @SessionScoped
-public class ModuleGroupsBean implements Serializable {
+public class ModuleConcertBean implements Serializable {
 	
-	private final String tableName = "fp_group";
+	private final String tableName = "fp_concert";
 
     public String[] getTableFields () {
 		String[] arr = new String[3];
-		arr[0] = "Название";
-		arr[1] = "Жанр";
-		arr[2] = "Дата создания";
+		arr[0] = "Страна";
+		arr[1] = "Место проведения";
+		arr[2] = "Дата проведения";
 		return arr;
     }
 
@@ -32,15 +32,14 @@ public class ModuleGroupsBean implements Serializable {
 			
 			ArrayList items = new ArrayList ();
 			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 3, 5);
-				item.setPublicValue (0, result.getString ("name"));
-				item.setPublicValue (1, result.getString ("genre"));
-				item.setPublicValue (2, Utils.toNormDate (result.getString ("creation_date")));
-				item.setEditValue (0, result.getString ("name"));
-				item.setEditValue (1, result.getString ("genre"));
-				item.setEditValue (2, Utils.toNormDate (result.getString ("creation_date")));
-				item.setEditValue (3, Utils.toNormDate (result.getString ("decay_date")));
-				item.setEditValue (4, result.getString ("description"));
+				Item item = new Item (result.getInt ("id"), 3, 4);
+				item.setPublicValue (0, result.getString ("country"));
+				item.setPublicValue (1, result.getString ("place"));
+				item.setPublicValue (2, Utils.toNormDate (result.getString ("concert_date")));
+				item.setEditValue (0, result.getString ("country"));
+				item.setEditValue (1, result.getString ("place"));
+				item.setEditValue (2, Utils.toNormDate (result.getString ("concert_date")));
+				item.setEditValue (3, result.getString ("description"));
 				items.add (item);
 			}
 			
@@ -65,28 +64,24 @@ public class ModuleGroupsBean implements Serializable {
         }
     }
 
-    private String itemName;
-    public String getEditName ()           {   return "";   }
-    public void setEditName (String value) {   itemName = Utils.escapeQuotes (value);  }
-    private String itemGenre;
-    public String getEditGenre ()           {   return "";   }
-    public void setEditGenre (String value) {   itemGenre = Utils.escapeQuotes (value);  }
-    private String itemCreationDate;
-    public String getEditCreationDate ()           {   return "";   }
-    public void setEditCreationDate (String value) {   itemCreationDate = Utils.escapeQuotes (value);  }
-    private String itemDecayDate;
-    public String getEditDecayDate ()           {   return "";   }
-    public void setEditDecayDate (String value) {   itemDecayDate = Utils.escapeQuotes (value);  }
+    private String itemCountry;
+    public String getEditCountry ()           {   return "";   }
+    public void setEditCountry (String value) {   itemCountry = Utils.escapeQuotes (value);  }
+    private String itemPlace;
+    public String getEditPlace ()           {   return "";   }
+    public void setEditPlace (String value) {   itemPlace = Utils.escapeQuotes (value);  }
+    private String itemConcertDate;
+    public String getEditConcertDate ()           {   return "";   }
+    public void setEditConcertDate (String value) {   itemConcertDate = Utils.escapeQuotes (value);  }
     private String itemDescription;
     public String getEditDescription ()           {   return "";   }
     public void setEditDescription (String value) {   itemDescription = Utils.escapeQuotes (value);  }
     
-    public ModuleGroupsBean() {
+    public ModuleConcertBean() {
         itemId = 0;
-		itemName = "";
-		itemGenre = "";
-		itemCreationDate = "";
-		itemDecayDate = "";
+		itemCountry = "";
+		itemPlace = "";
+		itemConcertDate = "";
 		itemDescription = "";
     }
 	
@@ -108,13 +103,12 @@ public class ModuleGroupsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " INSERT INTO " + tableName + 
-						 " (name, genre, creation_date, decay_date, description) VALUES (?, ?, to_date(?,'DD.MM.YYYY'), to_date(?,'DD.MM.YYYY'), ?) ";
+						 " (country, place, concert_date, description) VALUES (?, ?, to_date(?,'DD.MM.YYYY'), ?) ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemGenre);
-			prepareStatement.setString (3, itemCreationDate);
-			prepareStatement.setString (4, itemDecayDate);
-			prepareStatement.setString (5, itemDescription);
+			prepareStatement.setString (1, itemCountry);
+			prepareStatement.setString (2, itemPlace);
+			prepareStatement.setString (3, itemConcertDate);
+			prepareStatement.setString (4, itemDescription);
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
@@ -126,15 +120,14 @@ public class ModuleGroupsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " UPDATE " + tableName + " SET " + 
-						 " name=?, genre=?, creation_date=to_date(?,'DD.MM.YYYY'), decay_date=to_date(?,'DD.MM.YYYY'), description=? " + 
+						 " country=?, place=?, concert_date=to_date(?,'DD.MM.YYYY'), description=? " + 
 						 " WHERE id=? ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemGenre);
-			prepareStatement.setString (3, itemCreationDate);
-			prepareStatement.setString (4, itemDecayDate);
-			prepareStatement.setString (5, itemDescription);
-			prepareStatement.setString (6, itemId + "");
+			prepareStatement.setString (1, itemCountry);
+			prepareStatement.setString (2, itemPlace);
+			prepareStatement.setString (3, itemConcertDate);
+			prepareStatement.setString (4, itemDescription);
+			prepareStatement.setString (5, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}

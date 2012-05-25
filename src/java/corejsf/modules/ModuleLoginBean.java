@@ -8,17 +8,16 @@ import java.sql.*;
 import corejsf.*;
 import java.util.ArrayList;
 
-@Named("module_labels")
+@Named("module_login")
 @SessionScoped
-public class ModuleLabelsBean implements Serializable {
+public class ModuleLoginBean implements Serializable {
 	
-	private final String tableName = "fp_label";
+	private final String tableName = "fp_login";
 
     public String[] getTableFields () {
-		String[] arr = new String[3];
-		arr[0] = "Название";
-		arr[1] = "Страна";
-		arr[2] = "Местоположение";
+		String[] arr = new String[2];
+		arr[0] = "Логин";
+		arr[1] = "Права";
 		return arr;
     }
 
@@ -32,14 +31,11 @@ public class ModuleLabelsBean implements Serializable {
 			
 			ArrayList items = new ArrayList ();
 			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 3, 4);
-				item.setPublicValue (0, result.getString ("name"));
-				item.setPublicValue (1, result.getString ("country"));
-				item.setPublicValue (2, result.getString ("place"));
-				item.setEditValue (0, result.getString ("name"));
-				item.setEditValue (1, result.getString ("country"));
-				item.setEditValue (2, result.getString ("place"));
-				item.setEditValue (3, result.getString ("description"));
+				Item item = new Item (result.getInt ("id"), 2, 2);
+				item.setPublicValue (0, result.getString ("login"));
+				item.setPublicValue (1, result.getString ("is_admin"));
+				item.setEditValue (0, result.getString ("login"));
+				item.setEditValue (1, result.getString ("is_admin"));
 				items.add (item);
 			}
 			
@@ -64,28 +60,17 @@ public class ModuleLabelsBean implements Serializable {
         }
     }
 
-    private String itemName;
-    public String getEditName ()           {   return "";   }
-    public void setEditName (String value) {   itemName = Utils.escapeQuotes (value);  }
-
-    private String itemCountry;
-    public String getEditCountry ()           {   return "";   }
-    public void setEditCountry (String value) {   itemCountry = Utils.escapeQuotes (value);  }
-
-    private String itemPlace;
-    public String getEditPlace ()           {   return "";   }
-    public void setEditPlace (String value) {   itemPlace = Utils.escapeQuotes (value);  }
-
-    private String itemDescription;
-    public String getEditDescription ()           {   return "";   }
-    public void setEditDescription (String value) {   itemDescription = Utils.escapeQuotes (value);  }
+    private String itemLogin;
+    public String getEditLogin ()           {   return "";   }
+    public void setEditLogin (String value) {   itemLogin = Utils.escapeQuotes (value);  }
+    private String itemIsAdmin;
+    public String getEditIsAdmin ()           {   return "";   }
+    public void setEditIsAdmin (String value) {   itemIsAdmin = Utils.escapeQuotes (value);  }
     
-    public ModuleLabelsBean() {
+    public ModuleLoginBean() {
         itemId = 0;
-        itemName = "";
-        itemCountry = "";
-        itemPlace = "";
-        itemDescription = "";
+		itemLogin = "";
+		itemIsAdmin = "";
     }
 	
     public String remove (int id) {
@@ -106,12 +91,10 @@ public class ModuleLabelsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " INSERT INTO " + tableName + 
-						 " (name, country, place, description) VALUES (?, ?, ?, ?) ";
+						 " (login, is_admin) VALUES (?, ?) ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemCountry);
-			prepareStatement.setString (3, itemPlace);
-			prepareStatement.setString (4, itemDescription);
+			prepareStatement.setString (1, itemLogin);
+			prepareStatement.setString (2, itemIsAdmin);
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
@@ -123,14 +106,12 @@ public class ModuleLabelsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " UPDATE " + tableName + " SET " + 
-						 " name=?, country=?, place=?, description=? " + 
+						 " login=?, is_admin=? " + 
 						 " WHERE id=? ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemCountry);
-			prepareStatement.setString (3, itemPlace);
-			prepareStatement.setString (4, itemDescription);
-			prepareStatement.setString (5, itemId + "");
+			prepareStatement.setString (1, itemLogin);
+			prepareStatement.setString (2, itemIsAdmin);
+			prepareStatement.setString (3, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}

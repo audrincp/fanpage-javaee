@@ -6,21 +6,61 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.sql.*;
 import corejsf.*;
-import java.util.ArrayList;
 import javax.faces.model.SelectItem;
+import java.util.ArrayList;
 
-@Named("module_albums")
+@Named("module_group_performers")
 @SessionScoped
-public class ModuleAlbumsBean implements Serializable {
+public class ModuleGroupPerformersBean implements Serializable {
 	
-	private final String tableName = "fp_album";
-	private final String groupTableName = "fp_group";
+	private final String tableName = "fp_group_performers";
+	private final String performerTableName = "fp_performer";
 
     public String[] getTableFields () {
-		String[] arr = new String[2];
-		arr[0] = "Название";
-		arr[1] = "Дата выхода";
+		String[] arr = new String[3];
+		arr[0] = "Имя";
+		arr[1] = "Фамилия";
+		arr[2] = "Период участия";
 		return arr;
+    }
+
+    public Item[] getTableItems () {
+		try {
+			Connection conn = DBController.getConnection();
+			
+			String sql = "SELECT * FROM " + tableName + " WHERE group_id=?";
+			PreparedStatement prepareStatement = conn.prepareStatement (sql);
+			prepareStatement.setString (1, groupId + "");
+			ResultSet result = prepareStatement.executeQuery();
+			
+			sql = "SELECT * FROM " + performerTableName + " WHERE id=?";
+			PreparedStatement psmtSelectPerformer = conn.prepareStatement (sql);
+			
+			ArrayList items = new ArrayList ();
+			while (result.next ()) {
+				Item item = new Item (result.getInt ("id"), 3, 2);
+				
+				psmtSelectPerformer.setString (1, result.getInt ("performer_id") + "");
+				ResultSet resultPerformer = psmtSelectPerformer.executeQuery();
+				resultPerformer.next ();
+				
+				item.setPublicValue (0, resultPerformer.getString ("name"));
+				item.setPublicValue (1, resultPerformer.getString ("surname"));
+				item.setPublicValue (2, result.getString ("period"));
+				
+				item.setEditValue (0, result.getString ("performer_id"));
+				item.setEditValue (1, result.getString ("period"));
+				items.add (item);
+			}
+			
+			conn.close ();
+			
+			return Item.ObjectsToItems (items.toArray ());
+		}
+		catch (Exception e) {
+			System.out.println ("Error in get table items: " + e);
+		}
+		return null;
     }
 	
 	private int groupId = 0;
@@ -41,36 +81,9 @@ public class ModuleAlbumsBean implements Serializable {
 	public SelectItem[] getGroups () {
 		return DBCore.getGroups ();
 	}
-
-    public Item[] getTableItems () {
-		try {
-			Connection conn = DBController.getConnection();
-			
-			String sql = "SELECT * FROM " + tableName + " WHERE group_id=?";
-			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, groupId + "");
-			ResultSet result = prepareStatement.executeQuery();
-			
-			ArrayList items = new ArrayList ();
-			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 2, 3);
-				item.setPublicValue (0, result.getString ("name"));
-				item.setPublicValue (1, Utils.toNormDate (result.getString ("released")));
-				item.setEditValue (0, result.getString ("name"));
-				item.setEditValue (1, Utils.toNormDate (result.getString ("released")));
-				item.setEditValue (2, result.getString ("description"));
-				items.add (item);
-			}
-			
-			conn.close ();
-			
-			return Item.ObjectsToItems (items.toArray ());
-		}
-		catch (Exception e) {
-			System.out.println ("Error in get table items: " + e);
-		}
-		return null;
-    }
+	public SelectItem[] getPerformers () {
+		return DBCore.getPerformers ();
+	}
 
     private int itemId;
     public String getEditId () { return ""; }
@@ -82,23 +95,20 @@ public class ModuleAlbumsBean implements Serializable {
             itemId = 0;
         }
     }
+
+    private String itemPerformerId;
+    public String getEditPerformerId ()           {   return "";   }
+    public void setEditPerformerId (String value) {   itemPerformerId = Utils.escapeQuotes (value);  }
+    private String itemPeriod;
+    public String getEditPeriod ()           {   return "";   }
+    public void setEditPeriod (String value) {   itemPeriod = Utils.escapeQuotes (value);  }
     
-    private String itemName;
-    public String getEditName ()           {   return "";   }
-    public void setEditName (String value) {   itemName = Utils.escapeQuotes (value);  }
-    private String itemReleased;
-    public String getEditReleased ()           {   return "";   }
-    public void setEditReleased (String value) {   itemReleased = Utils.escapeQuotes (value);  }
-    private String itemDescription;
-    public String getEditDescription ()           {   return "";   }
-    public void setEditDescription (String value) {   itemDescription = Utils.escapeQuotes (value);  }
-	    
-    public ModuleAlbumsBean() {
+    
+    public ModuleGroupPerformersBean() {
         itemId = 0;
-		itemName = "";
-		itemReleased = "";
-		itemDescription = "";
-	}
+		itemPerformerId = "";
+		itemPeriod = "";
+    }
 	
     public String remove (int id) {
 		try {
@@ -119,12 +129,11 @@ public class ModuleAlbumsBean implements Serializable {
 			if (groupId > 0) {
 				Connection conn = DBController.getConnection();
 				String sql = " INSERT INTO " + tableName + 
-							 " (group_id, name, released, description) VALUES (?, ?, to_date(?,'DD.MM.YYYY'), ?) ";
+							 " (period, performer_id, group_id) VALUES (?, ?, ?) ";
 				PreparedStatement prepareStatement = conn.prepareStatement (sql);
-				prepareStatement.setString (1, groupId + "");
-				prepareStatement.setString (2, itemName);
-				prepareStatement.setString (3, itemReleased);
-				prepareStatement.setString (4, itemDescription);
+				prepareStatement.setString (1, itemPeriod);
+				prepareStatement.setString (2, itemPerformerId);
+				prepareStatement.setString (3, groupId + "");
 				ResultSet result = prepareStatement.executeQuery();
 				conn.close ();
 			}
@@ -137,13 +146,12 @@ public class ModuleAlbumsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " UPDATE " + tableName + " SET " + 
-						 " name=?, released=to_date(?,'DD.MM.YYYY'), description=? " + 
+						 " period=?, performer_id=? " + 
 						 " WHERE id=? ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemReleased);
-			prepareStatement.setString (3, itemDescription);
-			prepareStatement.setString (4, itemId + "");
+			prepareStatement.setString (1, itemPeriod);
+			prepareStatement.setString (2, itemPerformerId);
+			prepareStatement.setString (3, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
@@ -152,10 +160,10 @@ public class ModuleAlbumsBean implements Serializable {
 		}
 	}
     public String save () {
-        if (itemId == 0)
-            addItem ();
-        else
-            updateItem ();
+		if (itemId == 0)
+			addItem ();
+		else
+			updateItem ();
 		
         return null;
     }
