@@ -36,7 +36,7 @@ public class LoginBean implements Serializable {
         try {
             Connection conn = DBController.getConnection();
             
-			String sql = "SELECT COUNT(id) AS cnt_id FROM login WHERE login=? AND password=?";
+			String sql = "SELECT COUNT(id) AS cnt_id FROM fp_login WHERE login=? AND password=?";
             PreparedStatement prepareStatement = conn.prepareStatement (sql);
             prepareStatement.setString (1, login);
             prepareStatement.setString (2, DBController.md5 (password));

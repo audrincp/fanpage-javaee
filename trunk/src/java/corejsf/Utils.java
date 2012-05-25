@@ -8,6 +8,8 @@ public class Utils {
 	 * перевод даты из yyyy-mm-dd в dd.mm.yyyy
 	 */
 	public static String toNormDate (String date) {
+		if (date == null || date.length () < 10)
+			return "";
 		String[] arr = date.split (" ");
 		if (arr.length != 2)
 			return "";

@@ -6,21 +6,60 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.sql.*;
 import corejsf.*;
-import java.util.ArrayList;
 import javax.faces.model.SelectItem;
+import java.util.ArrayList;
 
-@Named("module_albums")
+@Named("module_group_prizes")
 @SessionScoped
-public class ModuleAlbumsBean implements Serializable {
+public class ModuleGroupPrizesBean implements Serializable {
 	
-	private final String tableName = "fp_album";
-	private final String groupTableName = "fp_group";
+	private final String tableName = "fp_group_prizes";
+	private final String prizeTableName = "fp_prize";
 
     public String[] getTableFields () {
-		String[] arr = new String[2];
+		String[] arr = new String[3];
 		arr[0] = "Название";
-		arr[1] = "Дата выхода";
+		arr[1] = "Дата награждения";
+		arr[2] = "Место награждения";
 		return arr;
+    }
+
+    public Item[] getTableItems () {
+		try {
+			Connection conn = DBController.getConnection();
+			
+			String sql = "SELECT * FROM " + tableName + " WHERE group_id=?";
+			PreparedStatement prepareStatement = conn.prepareStatement (sql);
+			prepareStatement.setString (1, groupId + "");
+			ResultSet result = prepareStatement.executeQuery();
+			
+			sql = "SELECT * FROM " + prizeTableName + " WHERE id=?";
+			PreparedStatement psmtSelectPrize = conn.prepareStatement (sql);
+			
+			ArrayList items = new ArrayList ();
+			while (result.next ()) {
+				Item item = new Item (result.getInt ("id"), 3, 1);
+				
+				psmtSelectPrize.setString (1, result.getInt ("prize_id") + "");
+				ResultSet resultPrize = psmtSelectPrize.executeQuery();
+				resultPrize.next ();
+				
+				item.setPublicValue (0, resultPrize.getString ("name"));
+				item.setPublicValue (1, Utils.toNormDate (resultPrize.getString ("award_date")));
+				item.setPublicValue (2, resultPrize.getString ("place"));
+				
+				item.setEditValue (0, result.getString ("prize_id"));
+				items.add (item);
+			}
+			
+			conn.close ();
+			
+			return Item.ObjectsToItems (items.toArray ());
+		}
+		catch (Exception e) {
+			System.out.println ("Error in get table items: " + e);
+		}
+		return null;
     }
 	
 	private int groupId = 0;
@@ -41,36 +80,9 @@ public class ModuleAlbumsBean implements Serializable {
 	public SelectItem[] getGroups () {
 		return DBCore.getGroups ();
 	}
-
-    public Item[] getTableItems () {
-		try {
-			Connection conn = DBController.getConnection();
-			
-			String sql = "SELECT * FROM " + tableName + " WHERE group_id=?";
-			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, groupId + "");
-			ResultSet result = prepareStatement.executeQuery();
-			
-			ArrayList items = new ArrayList ();
-			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 2, 3);
-				item.setPublicValue (0, result.getString ("name"));
-				item.setPublicValue (1, Utils.toNormDate (result.getString ("released")));
-				item.setEditValue (0, result.getString ("name"));
-				item.setEditValue (1, Utils.toNormDate (result.getString ("released")));
-				item.setEditValue (2, result.getString ("description"));
-				items.add (item);
-			}
-			
-			conn.close ();
-			
-			return Item.ObjectsToItems (items.toArray ());
-		}
-		catch (Exception e) {
-			System.out.println ("Error in get table items: " + e);
-		}
-		return null;
-    }
+	public SelectItem[] getPrizes () {
+		return DBCore.getPrizes ();
+	}
 
     private int itemId;
     public String getEditId () { return ""; }
@@ -82,23 +94,15 @@ public class ModuleAlbumsBean implements Serializable {
             itemId = 0;
         }
     }
+
+    private String itemPrizeId;
+    public String getEditPrizeId ()           {   return "";   }
+    public void setEditPrizeId (String value) {   itemPrizeId = Utils.escapeQuotes (value);  }
     
-    private String itemName;
-    public String getEditName ()           {   return "";   }
-    public void setEditName (String value) {   itemName = Utils.escapeQuotes (value);  }
-    private String itemReleased;
-    public String getEditReleased ()           {   return "";   }
-    public void setEditReleased (String value) {   itemReleased = Utils.escapeQuotes (value);  }
-    private String itemDescription;
-    public String getEditDescription ()           {   return "";   }
-    public void setEditDescription (String value) {   itemDescription = Utils.escapeQuotes (value);  }
-	    
-    public ModuleAlbumsBean() {
+    public ModuleGroupPrizesBean() {
         itemId = 0;
-		itemName = "";
-		itemReleased = "";
-		itemDescription = "";
-	}
+		itemPrizeId = "";
+    }
 	
     public String remove (int id) {
 		try {
@@ -119,12 +123,10 @@ public class ModuleAlbumsBean implements Serializable {
 			if (groupId > 0) {
 				Connection conn = DBController.getConnection();
 				String sql = " INSERT INTO " + tableName + 
-							 " (group_id, name, released, description) VALUES (?, ?, to_date(?,'DD.MM.YYYY'), ?) ";
+							 " (prize_id, group_id) VALUES (?, ?) ";
 				PreparedStatement prepareStatement = conn.prepareStatement (sql);
-				prepareStatement.setString (1, groupId + "");
-				prepareStatement.setString (2, itemName);
-				prepareStatement.setString (3, itemReleased);
-				prepareStatement.setString (4, itemDescription);
+				prepareStatement.setString (1, itemPrizeId);
+				prepareStatement.setString (2, groupId + "");
 				ResultSet result = prepareStatement.executeQuery();
 				conn.close ();
 			}
@@ -137,13 +139,11 @@ public class ModuleAlbumsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " UPDATE " + tableName + " SET " + 
-						 " name=?, released=to_date(?,'DD.MM.YYYY'), description=? " + 
+						 " prize_id=? " + 
 						 " WHERE id=? ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemReleased);
-			prepareStatement.setString (3, itemDescription);
-			prepareStatement.setString (4, itemId + "");
+			prepareStatement.setString (1, itemPrizeId);
+			prepareStatement.setString (2, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
@@ -152,10 +152,10 @@ public class ModuleAlbumsBean implements Serializable {
 		}
 	}
     public String save () {
-        if (itemId == 0)
-            addItem ();
-        else
-            updateItem ();
+		if (itemId == 0)
+			addItem ();
+		else
+			updateItem ();
 		
         return null;
     }
