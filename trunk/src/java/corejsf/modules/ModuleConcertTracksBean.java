@@ -6,51 +6,71 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.sql.*;
 import corejsf.*;
-import java.util.ArrayList;
 import javax.faces.model.SelectItem;
+import java.util.ArrayList;
 
-@Named("module_track")
+@Named("module_concert_tracks")
 @SessionScoped
-public class ModuleTrackBean implements Serializable {
+public class ModuleConcertTracksBean implements Serializable {
 	
-	private final String tableName = "fp_track";
+	private final String tableName = "fp_concert_tracks";
+	private final String trackTableName = "fp_track";
+	private final String groupTableName = "fp_group";
+	private final String albumTableName = "fp_album";
 
     public String[] getTableFields () {
-		String[] arr = new String[2];
-		arr[0] = "Название";
-		arr[1] = "Длительность (секунд)";
+		String[] arr = new String[3];
+		arr[0] = "Группа";
+		arr[1] = "Название";
+		arr[2] = "Длительность";
 		return arr;
     }
 
     public Item[] getTableItems () {
 		try {
-			if (groupId > 0 && albumId > 0) {
+			if (concertId > 0) {
 				Connection conn = DBController.getConnection();
 				
-				String sql = "SELECT * FROM " + tableName + " WHERE album_id=?";
+				String sql = "SELECT * FROM " + tableName + " WHERE concert_id=?";
 				PreparedStatement prepareStatement = conn.prepareStatement (sql);
-				prepareStatement.setString (1, albumId + "");
+				prepareStatement.setString (1, concertId + "");
 				ResultSet result = prepareStatement.executeQuery();
+				
+				sql = "SELECT * FROM " + trackTableName + " WHERE id=?";
+				PreparedStatement psmtSelectTrack = conn.prepareStatement (sql);
+				
+				sql = 	" SELECT * FROM " + groupTableName + 
+						" WHERE id IN ( SELECT group_id FROM " + albumTableName + " WHERE id=? ) ";
+				PreparedStatement psmtSelectGroup = conn.prepareStatement (sql);
 				
 				ArrayList items = new ArrayList ();
 				while (result.next ()) {
-					Item item = new Item (result.getInt ("id"), 2, 3);
+					Item item = new Item (result.getInt ("id"), 3, 1);
 					
-					int length_seconds = Integer.parseInt (result.getString ("length_seconds"));
+					psmtSelectTrack.setString (1, result.getInt ("track_id") + "");
+					ResultSet resultTrack = psmtSelectTrack.executeQuery();
+					resultTrack.next ();
+					
+					item.setPublicValue (1, resultTrack.getString ("name"));
+					
+					int length_seconds = Integer.parseInt (resultTrack.getString ("length_seconds"));
 					int m = length_seconds / 60;
 					int s = length_seconds % 60;
 					String mmhh = (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
 					
-					item.setPublicValue (0, result.getString ("name"));
-					item.setPublicValue (1, mmhh);
-					item.setEditValue (0, result.getString ("name"));
-					item.setEditValue (1, mmhh);
-					item.setEditValue (2, result.getString ("label_id"));
+					item.setPublicValue (2, mmhh);
+					
+					psmtSelectGroup.setString (1, resultTrack.getString ("album_id"));
+					ResultSet resultGroup = psmtSelectGroup.executeQuery();
+					resultGroup.next ();
+					item.setPublicValue (0, resultGroup.getString ("name"));
+					
+					item.setEditValue (0, result.getString ("track_id"));
 					items.add (item);
 				}
 				
 				conn.close ();
-				
+			
 				return Item.ObjectsToItems (items.toArray ());
 			}
 		}
@@ -60,6 +80,22 @@ public class ModuleTrackBean implements Serializable {
 		return null;
     }
 	
+	private int concertId = 0;
+	public String getConcert () {
+		return concertId + "";
+	}
+	public void setConcert (String value) {
+		try {
+			concertId = Integer.parseInt (value);
+		}
+		catch (Exception e) {
+			System.out.println ("Error in set concert: " + e);
+		}
+	}
+	public SelectItem[] getConcerts () {
+		return DBCore.getConcerts ();
+	}
+	
 	private int groupId = 0;
 	public String getGroup () {
 		return groupId + "";
@@ -67,8 +103,6 @@ public class ModuleTrackBean implements Serializable {
 	public void setGroup (String value) {
 		try {
 			groupId = Integer.parseInt (value);
-			if (groupId == 0)
-				albumId = 0;
 		}
 		catch (Exception e) {
 			System.out.println ("Error in set group: " + e);
@@ -77,6 +111,7 @@ public class ModuleTrackBean implements Serializable {
 	public SelectItem[] getGroups () {
 		return DBCore.getGroups ();
 	}
+	
 	private int albumId = 0;
 	public String getAlbum () {
 		if (groupId == 0)
@@ -85,21 +120,21 @@ public class ModuleTrackBean implements Serializable {
 	}
 	public void setAlbum (String value) {
 		try {
-			albumId = Integer.parseInt (value);
 			if (groupId == 0)
 				albumId = 0;
+			else
+				albumId = Integer.parseInt (value);
 		}
 		catch (Exception e) {
-			System.out.println ("Error in set group: " + e);
+			System.out.println ("Error in set album: " + e);
 		}
 	}
 	public SelectItem[] getAlbums () {
 		return DBCore.getAlbums (groupId);
 	}
-	public SelectItem[] getLabels () {
-		return DBCore.getLabels ();
+	public SelectItem[] getTracks () {
+		return DBCore.getTracks (albumId);
 	}
-	
 
     private int itemId;
     public String getEditId () { return ""; }
@@ -112,30 +147,13 @@ public class ModuleTrackBean implements Serializable {
         }
     }
 
-    private String itemName;
-    public String getEditName ()           {   return "";   }
-    public void setEditName (String value) {   itemName = Utils.escapeQuotes (value);  }
-    private String itemLengthSeconds;
-    public String getEditLengthSeconds ()           {   return "";   }
-    public void setEditLengthSeconds (String value) {
-		String[] arr = Utils.escapeQuotes (value).split (":");
-		if (arr.length == 2) {
-			int m = Integer.parseInt (arr[0]);
-			int s = Integer.parseInt (arr[1]);
-			itemLengthSeconds = (m * 60 + s) + "";
-		}
-		else {
-			itemLengthSeconds = Utils.escapeQuotes (value);
-		}
-	}
-	private String itemLabelId;
-    public String getEditLabelId ()           {   return "";   }
-    public void setEditLabelId (String value) {   itemLabelId = Utils.escapeQuotes (value);  }
+    private String itemTrackId;
+    public String getEditTrackId ()           {   return "";   }
+    public void setEditTrackId (String value) {   itemTrackId = Utils.escapeQuotes (value);  }
     
-    public ModuleTrackBean() {
+    public ModuleConcertTracksBean() {
         itemId = 0;
-		itemName = "";
-		itemLengthSeconds = "";
+		itemTrackId = "";
     }
 	
     public String remove (int id) {
@@ -154,15 +172,13 @@ public class ModuleTrackBean implements Serializable {
     }
 	private void addItem () {
 		try {
-			if (groupId > 0 && albumId > 0) {
+			if (groupId > 0) {
 				Connection conn = DBController.getConnection();
 				String sql = " INSERT INTO " + tableName + 
-							 " (name, length_seconds, album_id, label_id) VALUES (?, ?, ?, ?) ";
+							 " (concert_id, track_id) VALUES (?, ?) ";
 				PreparedStatement prepareStatement = conn.prepareStatement (sql);
-				prepareStatement.setString (1, itemName);
-				prepareStatement.setString (2, itemLengthSeconds);
-				prepareStatement.setString (3, albumId + "");
-				prepareStatement.setString (4, itemLabelId);
+				prepareStatement.setString (1, concertId + "");
+				prepareStatement.setString (2, itemTrackId);
 				ResultSet result = prepareStatement.executeQuery();
 				conn.close ();
 			}
@@ -175,13 +191,11 @@ public class ModuleTrackBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " UPDATE " + tableName + " SET " + 
-						 " name=?, length_seconds=?, label_id=? " + 
+						 " track_id=? " + 
 						 " WHERE id=? ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
-			prepareStatement.setString (1, itemName);
-			prepareStatement.setString (2, itemLengthSeconds);
-			prepareStatement.setString (2, itemLabelId);
-			prepareStatement.setString (4, itemId + "");
+			prepareStatement.setString (1, itemTrackId);
+			prepareStatement.setString (2, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
