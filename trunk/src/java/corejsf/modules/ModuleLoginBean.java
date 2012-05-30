@@ -31,11 +31,12 @@ public class ModuleLoginBean implements Serializable {
 			
 			ArrayList items = new ArrayList ();
 			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 2, 2);
+				Item item = new Item (result.getInt ("id"), 2, 3);
 				item.setPublicValue (0, result.getString ("login"));
 				item.setPublicValue (1, result.getString ("is_admin"));
 				item.setEditValue (0, result.getString ("login"));
 				item.setEditValue (1, result.getString ("is_admin"));
+				item.setEditValue (2, "");
 				items.add (item);
 			}
 			
@@ -66,11 +67,15 @@ public class ModuleLoginBean implements Serializable {
     private String itemIsAdmin;
     public String getEditIsAdmin ()           {   return "";   }
     public void setEditIsAdmin (String value) {   itemIsAdmin = Utils.escapeQuotes (value);  }
+	private String itemPassword;
+    public String getEditPassword ()           {   return "";   }
+    public void setEditPassword (String value) {   itemPassword = Utils.escapeQuotes (value);  }
     
     public ModuleLoginBean() {
         itemId = 0;
 		itemLogin = "";
 		itemIsAdmin = "";
+		itemPassword = "";
     }
 	
     public String remove (int id) {
@@ -91,10 +96,11 @@ public class ModuleLoginBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " INSERT INTO " + tableName + 
-						 " (login, is_admin) VALUES (?, ?) ";
+						 " (login, is_admin, password) VALUES (?, ?, ?) ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
 			prepareStatement.setString (1, itemLogin);
 			prepareStatement.setString (2, itemIsAdmin);
+			prepareStatement.setString (3, DBController.md5 (itemPassword));
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
@@ -106,12 +112,18 @@ public class ModuleLoginBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
 			String sql = " UPDATE " + tableName + " SET " + 
-						 " login=?, is_admin=? " + 
+						 " login=?, is_admin=?" + (itemPassword.length () > 0 ? ", password=?" : "") + 
 						 " WHERE id=? ";
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
 			prepareStatement.setString (1, itemLogin);
 			prepareStatement.setString (2, itemIsAdmin);
-			prepareStatement.setString (3, itemId + "");
+			if (itemPassword.length () > 0) {
+				prepareStatement.setString (3, DBController.md5 (itemPassword));
+				prepareStatement.setString (4, itemId + "");
+			}
+			else {
+				prepareStatement.setString (3, itemId + "");
+			}
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
 		}
