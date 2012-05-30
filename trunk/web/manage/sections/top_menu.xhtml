@@ -8,11 +8,18 @@
     </h:head>
     <h:body>
         <ui:composition>
-            <ul class="nav">
-                    <li><a href="index.xhtml">Главная</a></li>
-                    <li><a href="#">Модераторы</a></li>
-            </ul>
-            <p class="navbar-text pull-right">Вы вошли как <a href="#">#{login.currentLogin}</a></p>
+			<h:form style="margin:0;" rendered="#{login.isAdminLogged}">
+				<ul class="nav">
+						<li><a href="index.xhtml">Главная</a></li>
+						<li><a href="logins.xhtml">Модераторы</a></li>
+				</ul>
+			</h:form>
+			<h:form style="margin:0;" rendered="#{! login.isAdminLogged}">
+				<ul class="nav">
+						<li><a href="index.xhtml">Главная</a></li>
+				</ul>
+			</h:form>
+            <p class="navbar-text pull-right">Вы вошли как <b>#{login.currentLogin}</b></p>
         </ui:composition>
     </h:body>
 </html>
