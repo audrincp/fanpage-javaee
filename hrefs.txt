@@ -1,0 +1,27 @@
+Как создать простую загрузку файлов?
+http://www.jease.org/ru/blog/simple_upload
+
+File upload empty stream, После парсинга request файла нет.
+http://forum.sources.ru/index.php?showtopic=284883&hl=
+
+http://www.sql.ru/forum/actualthread.aspx?tid=922732
+
+PrimeFaces
+http://www.primefaces.org/documentation.html
+http://www.primefaces.org/downloads.html
+http://sait-com.com/articles/javaee/3533-znakomstvo-s-primefaces.html
+http://www.primefaces.org/showcase/ui/fileUploadSingle.jsf
+http://dominikdorn.com/2009/12/fileupload-with-jsf-2-and-servlet-3-0/
+http://www.mastertheboss.com/web-interfaces/362-primefaces-file-upload-example.html
+
+Apache
+http://javatalks.ru/ftopic14948.php
+https://forums.oracle.com/forums/thread.jspa?threadID=1717029
+http://old.nabble.com/Tomahawk-1.1.3-inputFileUpload-solution-td6449010.html
+http://openejb.apache.org/examples-trunk/webapps/jsf/
+http://free-jsf-components.net/install_guides/myfaces-tomahawk.html
+http://balusc.blogspot.com/2009/12/uploading-files-with-jsf-20-and-servlet.html
+http://balusc.blogspot.com/2009/12/uploading-files-with-jsf-20-and-servlet.html
+http://stackoverflow.com/questions/8509711/java-how-do-i-save-an-uploaded-image-to-my-c-drive
+http://stackoverflow.com/questions/5418292/jsf-2-0-file-upload
+http://stackoverflow.com/questions/8509711/java-how-do-i-save-an-uploaded-image-to-my-c-drive

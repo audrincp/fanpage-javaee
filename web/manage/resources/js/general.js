@@ -17,52 +17,62 @@ jQuery(function($){
 		yearSuffix: ''};
 	$.datepicker.setDefaults($.datepicker.regional['ru']);
 });
-$(document).ready (function () {
+jQuery(document).ready (function () {
 	
-	$('#add-entity').click (function () {
-		$('#add_edit_form table tbody tr td:last-child').each (function (index) {
-			$(this).children ().val ('');
-			$(this).children ('textarea').text ('');
+	jQuery('#add-entity').click (function () {
+		jQuery('#edit_image_form').hide ();
+		jQuery('#add_edit_form table tbody tr td:last-child').each (function (index) {
+			jQuery(this).children ().val ('');
+			jQuery(this).children ('textarea').text ('');
 		});	
-		$('#add-entity').hide ();
-		$('#add_edit_form').show ();
+		jQuery('#add-entity').hide ();
+		jQuery('#add_edit_form').show ();
 		return false;
 	});
 	
-	$('#cancel-edit').click (function () {
-		$('#add_edit_form').hide ();
-		$('#add-entity').show ();
+	jQuery('#cancel-edit').click (function () {
+		jQuery('#add_edit_form').hide ();
+		jQuery('#add-entity').show ();
 		return false;
 	});
+	
+	jQuery('#edit_image_form button').click (function () {
+		jQuery('#edit_image_form').hide ();
+	});	
 	
 	//setTimeout ("htmlentity ();", 1000);
 	htmlentity ();
 	
-	$('.select_group').change (function () {
+	jQuery('.select_group').change (function () {
 		$(this).parent ().submit ();
 	});
 	
-	$('.datepicker').datepicker ();
+	jQuery('.datepicker').datepicker ();
 	
 });
 function edit () {
 	var global_arguments = arguments;
-	$('#add_edit_form table tbody tr td:last-child').each (function (index) {
+	jQuery('#add_edit_form table tbody tr td:last-child').each (function (index) {
 		var str = global_arguments[index];
 		str = str.split ("&#39"). join ("'");
 		str = str.split ("<br />"). join ("\n");
 		str = str.split ("&quot;"). join ("\"");
-		$(this).children ().val (str);
-		$(this).children ('textarea').text (str);
+		jQuery(this).children ().val (str);
+		jQuery(this).children ('textarea').text (str);
 	});
-	$('#add-entity').hide ();
-	$('#add_edit_form').show ();
+	jQuery('#add-entity').hide ();
+	jQuery('#add_edit_form').show ();
+}
+function edit_image (id) {
+	jQuery('#edit_image_form .item_id').val (id);
+	jQuery('#edit_image_form').show ();
+	jQuery('#add_edit_form').hide ();
 }
 function htmlentity () {
-	$('table td.data').each (function () {
+	jQuery('table td.data').each (function () {
 		//console.log ($(this).html ());
-		$(this).html ($(this).html ().split ("&amp;#39"). join ("'"));
-		$(this).html ($(this).html ().split ("&amp;quot;"). join ("\""));
+		jQuery(this).html (jQuery(this).html ().split ("&amp;#39"). join ("'"));
+		jQuery(this).html (jQuery(this).html ().split ("&amp;quot;"). join ("\""));
 		//console.log ($(this).html ().replace ("&amp;#39", "'"));
 	});
 }
