@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.prime.com.tr/ui">
     <h:head><title>Title</title></h:head>
     <h:body>
         <ui:composition template="./templates/module.xhtml">
@@ -28,11 +29,14 @@
 						<tbody>
 							<ui:repeat value="#{module_news.tableItems}" var="item">
 								<tr>
-																		<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
-																		<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
-																		<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>
-																		<td>
-										<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}', '#{item.getEditValue(3)}'); return false;"></button>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
+									<td class="data">
+										<h:graphicImage width="150" url="#{item.getPublicValue(1)}" />
+									</td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(3)}" /></td>
+									<td>
+										<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}', '#{item.getEditValue(3)}', '#{item.getEditValue(4)}'); return false;"></button>
 										<h:form class="_inline">
 											<input type="submit" value="&#x2A2F;" name="remove" class="btn btn-danger icon-remove my-icon-remove" jsfc="h:commandButton" action="#{module_news.remove(item.getId())}" onclick="if(confirm('Удалить? Восстановление будет невозможно!')) return true; else return false;" />
 										</h:form>
@@ -56,23 +60,29 @@
 									<td>ID</td>
 									<td><input class="item_id" type="hidden" jsfc="h:inputHidden" value="#{module_news.editId}" /></td>
 								</tr>
-																<tr>
+								<tr>
 									<td>Заголовок</td>
-																		<td><input type="text" jsfc="h:inputText" value="#{module_news.editTitle}" /></td>
-																	</tr>
-																<tr>
+									<td><input type="text" jsfc="h:inputText" value="#{module_news.editTitle}" /></td>
+								</tr>
+                                                                <tr>
+									<td>Изображение</td>
+									<td>
+                                                                            <p:fileUpload fileUploadListener="#{module_news.uploadImage}" />
+                                                                        </td>
+								</tr>
+								<tr>
 									<td>Дата</td>
-																		<td><input class="datepicker" type="text" jsfc="h:inputText" value="#{module_news.editNewsDate}" /></td>
-																	</tr>
-																<tr>
+									<td><input class="datepicker" type="text" jsfc="h:inputText" value="#{module_news.editNewsDate}" /></td>
+								</tr>
+								<tr>
 									<td>Анонс</td>
-																		<td><textarea jsfc="h:inputTextarea" value="#{module_news.editShort}" /></td>
-																	</tr>
-																<tr>
+									<td><textarea jsfc="h:inputTextarea" value="#{module_news.editShort}" /></td>
+								</tr>
+								<tr>
 									<td>Полный текст</td>
-																		<td><textarea jsfc="h:inputTextarea" value="#{module_news.editFull}" /></td>
-																	</tr>
-															</tbody>
+									<td><textarea jsfc="h:inputTextarea" value="#{module_news.editFull}" /></td>
+								</tr>
+							</tbody>
 						</table>
 						<button class="btn btn-primary save-button" value="Сохранить" jsfc="h:commandButton" action="#{module_news.save}" />
 						<button class="btn btn-warning" id="cancel-edit">Отмена</button>
