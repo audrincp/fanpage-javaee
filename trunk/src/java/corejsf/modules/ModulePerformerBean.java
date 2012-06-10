@@ -8,6 +8,19 @@ import java.sql.*;
 import corejsf.*;
 import java.util.ArrayList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.FileUploadEvent;
+
 @Named("module_performer")
 @SessionScoped
 public class ModulePerformerBean implements Serializable {
@@ -15,11 +28,12 @@ public class ModulePerformerBean implements Serializable {
 	private final String tableName = "fp_performer";
 
     public String[] getTableFields () {
-		String[] arr = new String[4];
-		arr[0] = "Имя";
-		arr[1] = "Фамилия";
-		arr[2] = "Дата рождения";
-		arr[3] = "Страна";
+		String[] arr = new String[5];
+		arr[0] = "Изображение";
+		arr[1] = "Имя";
+		arr[2] = "Фамилия";
+		arr[3] = "Дата рождения";
+		arr[4] = "Страна";
 		return arr;
     }
 
@@ -33,20 +47,22 @@ public class ModulePerformerBean implements Serializable {
 			
 			ArrayList items = new ArrayList ();
 			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 4, 9);
-				item.setPublicValue (0, result.getString ("name"));
-				item.setPublicValue (1, result.getString ("surname"));
-				item.setPublicValue (2, Utils.toNormDate (result.getString ("born_date")));
-				item.setPublicValue (3, result.getString ("country"));
-				item.setEditValue (0, result.getString ("name"));
-				item.setEditValue (1, result.getString ("surname"));
-				item.setEditValue (2, result.getString ("patronymic"));
-				item.setEditValue (3, Utils.toNormDate (result.getString ("born_date")));
-				item.setEditValue (4, result.getString ("sex"));
-				item.setEditValue (5, result.getString ("born_place"));
-				item.setEditValue (6, result.getString ("country"));
-				item.setEditValue (7, Utils.toNormDate (result.getString ("death")));
-				item.setEditValue (8, result.getString ("description"));
+				Item item = new Item (result.getInt ("id"), 5, 10);
+				item.setPublicValue (0, UploadFiles.getSrcForImage("performer", result.getInt ("id")));
+				item.setPublicValue (1, result.getString ("name"));
+				item.setPublicValue (2, result.getString ("surname"));
+				item.setPublicValue (3, Utils.toNormDate (result.getString ("born_date")));
+				item.setPublicValue (4, result.getString ("country"));
+				item.setEditValue (0, "");
+				item.setEditValue (1, result.getString ("name"));
+				item.setEditValue (2, result.getString ("surname"));
+				item.setEditValue (3, result.getString ("patronymic"));
+				item.setEditValue (4, Utils.toNormDate (result.getString ("born_date")));
+				item.setEditValue (5, result.getString ("sex"));
+				item.setEditValue (6, result.getString ("born_place"));
+				item.setEditValue (7, result.getString ("country"));
+				item.setEditValue (8, Utils.toNormDate (result.getString ("death")));
+				item.setEditValue (9, result.getString ("description"));
 				items.add (item);
 			}
 			
@@ -70,6 +86,12 @@ public class ModulePerformerBean implements Serializable {
             itemId = 0;
         }
     }
+	
+	public boolean isImageExists (int id) {
+		String filepath = UploadFiles.getPathForImage("performer", id);
+		System.out.println (filepath);
+		return new File (filepath).exists ();
+	}
 
     private String itemName;
     public String getEditName ()           {   return "";   }
@@ -99,6 +121,19 @@ public class ModulePerformerBean implements Serializable {
     public String getEditDescription ()           {   return "";   }
     public void setEditDescription (String value) {   itemDescription = Utils.escapeQuotes (value);  }
     
+	private boolean loadImage = false;
+	public void uploadImage(FileUploadEvent event) {  
+        FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");  
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        try {
+            Utils.copyFile("performer", 0, event.getFile().getInputstream());
+            loadImage = true;
+        }
+		catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
     public ModulePerformerBean() {
         itemId = 0;
 		itemName = "";
@@ -142,7 +177,21 @@ public class ModulePerformerBean implements Serializable {
 			prepareStatement.setString (8, itemDeath);
 			prepareStatement.setString (9, itemDescription);
 			ResultSet result = prepareStatement.executeQuery();
+			
+			sql = "SELECT id FROM " + tableName + " WHERE name=? AND surname=? ORDER BY id DESC";
+			prepareStatement = conn.prepareStatement (sql);
+			prepareStatement.setString (1, itemName);
+			prepareStatement.setString (2, itemSurname);
+			result = prepareStatement.executeQuery();
+			result.next ();
+			itemId = result.getInt ("id");
+			
 			conn.close ();
+			
+			if (loadImage) {
+				Utils.copyLoadImageTo("performer", itemId);
+				loadImage = false;
+			}
 		}
 		catch (Exception e) {
 			System.out.println ("Error in add item: " + e);
@@ -167,6 +216,11 @@ public class ModulePerformerBean implements Serializable {
 			prepareStatement.setString (10, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
+			
+			if (loadImage) {
+				Utils.copyLoadImageTo("performer", itemId);
+				loadImage = false;
+			}
 		}
 		catch (Exception e) {
 			System.out.println ("Error in update item: " + e);

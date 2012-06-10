@@ -44,7 +44,7 @@ jQuery(document).ready (function () {
 	htmlentity ();
 	
 	jQuery('.select_group').change (function () {
-		$(this).parent ().submit ();
+		jQuery(this).parent ().submit ();
 	});
 	
 	jQuery('.datepicker').datepicker ();

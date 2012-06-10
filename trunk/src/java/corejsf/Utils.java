@@ -49,8 +49,8 @@ public class Utils {
 	 */
 	public static void copyFile(String folder, int id, InputStream in) {
 	   try {
-                        File f = new File(UploadFiles.getPathForImage(folder, id));
-                        System.out.println (f.getAbsolutePath());
+			File f = new File(UploadFiles.getPathForImage(folder, id));
+			System.out.println (f.getAbsolutePath());
 			OutputStream out = new FileOutputStream(f);
 		 
 			int read = 0;
@@ -76,6 +76,8 @@ public class Utils {
 	public static void copyLoadImageTo(String folder, int id) {
 	   try {
                         File f = new File(UploadFiles.getPathForImage(folder, 0));
+						File f2 = new File(UploadFiles.getPathForImage(folder, id));
+						f2.delete ();
                         f.renameTo (new File(UploadFiles.getPathForImage(folder, id)));
 		} 
 		catch (Exception e) {
