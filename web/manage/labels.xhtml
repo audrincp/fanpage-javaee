@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:ui="http://java.sun.com/jsf/facelets">
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:p="http://primefaces.prime.com.tr/ui">
     <h:head><title>Title</title></h:head>
     <h:body>
         <ui:composition template="./templates/module.xhtml">
@@ -31,11 +32,14 @@
 						<tbody>
 							<ui:repeat value="#{module_labels.tableItems}" var="item">
 								<tr>
-									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
+									<td class="data">
+										<h:graphicImage rendered="#{module_labels.isImageExists(item.getId())}" width="150" url="#{item.getPublicValue(0)}" />
+									</td>
 									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
 									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>
+									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(3)}" /></td>
 									<td>
-										<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}', '#{item.getEditValue(3)}'); return false;"></button>
+										<button class="btn btn-info icon-pencil my-icon" onclick="JavaScript: edit('#{item.getId()}', '#{item.getEditValue(0)}', '#{item.getEditValue(1)}', '#{item.getEditValue(2)}', '#{item.getEditValue(3)}', '#{item.getEditValue(4)}'); return false;"></button>
 										<h:form class="_inline">
 											<input type="submit" value="&#x2A2F;" name="remove" class="btn btn-danger icon-remove my-icon-remove" jsfc="h:commandButton" action="#{module_labels.remove(item.getId())}" onclick="if(confirm('Удалить? Восстановление будет невозможно!')) return true; else return false;" />
 										</h:form>
@@ -58,6 +62,12 @@
 								<tr style="display: none;">
 									<td>ID</td>
 									<td><input class="item_id" type="hidden" jsfc="h:inputHidden" value="#{module_labels.editId}" /></td>
+								</tr>
+								<tr>
+									<td>Изображение</td>
+									<td>
+										<p:fileUpload fileUploadListener="#{module_labels.uploadImage}" />
+									</td>
 								</tr>
 								<tr>
 									<td>Название</td>

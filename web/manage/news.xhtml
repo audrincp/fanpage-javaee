@@ -31,7 +31,7 @@
 								<tr>
 									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(0)}" /></td>
 									<td class="data">
-										<h:graphicImage width="150" url="#{item.getPublicValue(1)}" />
+										<h:graphicImage rendered="#{module_news.isImageExists(item.getId())}" width="150" url="#{item.getPublicValue(1)}" />
 									</td>
 									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>
 									<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(3)}" /></td>

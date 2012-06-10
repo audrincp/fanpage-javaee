@@ -80,6 +80,12 @@ public class ModuleNewsBean implements Serializable {
             itemId = 0;
         }
     }
+	
+	public boolean isImageExists (int id) {
+		String filepath = UploadFiles.getPathForImage("news", id);
+		System.out.println (filepath);
+		return new File (filepath).exists ();
+	}
 
     private String itemTitle;
     public String getEditTitle ()           {   return "";   }
@@ -94,7 +100,7 @@ public class ModuleNewsBean implements Serializable {
     public String getEditFull ()           {   return "";   }
     public void setEditFull (String value) {   itemFull = Utils.escapeQuotes (value);  }
 	
-        private boolean loadImage = false;
+    private boolean loadImage = false;
 	public void uploadImage(FileUploadEvent event) {  
         FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");  
         FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -133,9 +139,9 @@ public class ModuleNewsBean implements Serializable {
 		try {
 			Connection conn = DBController.getConnection();
                         
-                        String sql;
-                        PreparedStatement prepareStatement;
-                        ResultSet result;
+			String sql;
+			PreparedStatement prepareStatement;
+			ResultSet result;
                         
 			sql = " INSERT INTO " + tableName + 
 						 " (title, news_date, short, full) VALUES (?, to_date(?,'DD.MM.YYYY'), ?, ?) ";
@@ -146,20 +152,20 @@ public class ModuleNewsBean implements Serializable {
 			prepareStatement.setString (4, itemFull);
 			result = prepareStatement.executeQuery();
                         
-                        sql = "SELECT id FROM " + tableName + " WHERE title=? AND news_date=to_date(?,'DD.MM.YYYY') ORDER BY id DESC";
-                        prepareStatement = conn.prepareStatement (sql);
-                        prepareStatement.setString (1, itemTitle);
+			sql = "SELECT id FROM " + tableName + " WHERE title=? AND news_date=to_date(?,'DD.MM.YYYY') ORDER BY id DESC";
+			prepareStatement = conn.prepareStatement (sql);
+			prepareStatement.setString (1, itemTitle);
 			prepareStatement.setString (2, itemNewsDate);
-                        result = prepareStatement.executeQuery();
-                        result.next ();
-                        itemId = result.getInt ("id");
+			result = prepareStatement.executeQuery();
+			result.next ();
+			itemId = result.getInt ("id");
                         
 			conn.close ();
                         
-                        if (loadImage) {
-                            Utils.copyLoadImageTo("news", itemId);
-                            loadImage = false;
-                        }
+			if (loadImage) {
+				Utils.copyLoadImageTo("news", itemId);
+				loadImage = false;
+			}
 		}
 		catch (Exception e) {
 			System.out.println ("Error in add item: " + e);

@@ -8,6 +8,19 @@ import java.sql.*;
 import corejsf.*;
 import java.util.ArrayList;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.FileUploadEvent;
+
 @Named("module_groups")
 @SessionScoped
 public class ModuleGroupsBean implements Serializable {
@@ -15,10 +28,11 @@ public class ModuleGroupsBean implements Serializable {
 	private final String tableName = "fp_group";
 
     public String[] getTableFields () {
-		String[] arr = new String[3];
-		arr[0] = "Название";
-		arr[1] = "Жанр";
-		arr[2] = "Дата создания";
+		String[] arr = new String[4];
+		arr[0] = "Изображение";
+		arr[1] = "Название";
+		arr[2] = "Жанр";
+		arr[3] = "Дата создания";
 		return arr;
     }
 
@@ -32,15 +46,17 @@ public class ModuleGroupsBean implements Serializable {
 			
 			ArrayList items = new ArrayList ();
 			while (result.next ()) {
-				Item item = new Item (result.getInt ("id"), 3, 5);
-				item.setPublicValue (0, result.getString ("name"));
-				item.setPublicValue (1, result.getString ("genre"));
-				item.setPublicValue (2, Utils.toNormDate (result.getString ("creation_date")));
-				item.setEditValue (0, result.getString ("name"));
-				item.setEditValue (1, result.getString ("genre"));
-				item.setEditValue (2, Utils.toNormDate (result.getString ("creation_date")));
-				item.setEditValue (3, Utils.toNormDate (result.getString ("decay_date")));
-				item.setEditValue (4, result.getString ("description"));
+				Item item = new Item (result.getInt ("id"), 4, 6);
+				item.setPublicValue (0, UploadFiles.getSrcForImage("groups", result.getInt ("id")));
+				item.setPublicValue (1, result.getString ("name"));
+				item.setPublicValue (2, result.getString ("genre"));
+				item.setPublicValue (3, Utils.toNormDate (result.getString ("creation_date")));
+				item.setEditValue (0, "");
+				item.setEditValue (1, result.getString ("name"));
+				item.setEditValue (2, result.getString ("genre"));
+				item.setEditValue (3, Utils.toNormDate (result.getString ("creation_date")));
+				item.setEditValue (4, Utils.toNormDate (result.getString ("decay_date")));
+				item.setEditValue (5, result.getString ("description"));
 				items.add (item);
 			}
 			
@@ -64,6 +80,12 @@ public class ModuleGroupsBean implements Serializable {
             itemId = 0;
         }
     }
+	
+	public boolean isImageExists (int id) {
+		String filepath = UploadFiles.getPathForImage("groups", id);
+		System.out.println (filepath);
+		return new File (filepath).exists ();
+	}
 
     private String itemName;
     public String getEditName ()           {   return "";   }
@@ -81,6 +103,19 @@ public class ModuleGroupsBean implements Serializable {
     public String getEditDescription ()           {   return "";   }
     public void setEditDescription (String value) {   itemDescription = Utils.escapeQuotes (value);  }
     
+	private boolean loadImage = false;
+	public void uploadImage(FileUploadEvent event) {  
+        FacesMessage msg = new FacesMessage("Success! ", event.getFile().getFileName() + " is uploaded.");  
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+        try {
+            Utils.copyFile("groups", 0, event.getFile().getInputstream());
+            loadImage = true;
+        }
+		catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
     public ModuleGroupsBean() {
         itemId = 0;
 		itemName = "";
@@ -116,7 +151,21 @@ public class ModuleGroupsBean implements Serializable {
 			prepareStatement.setString (4, itemDecayDate);
 			prepareStatement.setString (5, itemDescription);
 			ResultSet result = prepareStatement.executeQuery();
+			
+			sql = "SELECT id FROM " + tableName + " WHERE name=? AND genre=? ORDER BY id DESC";
+			prepareStatement = conn.prepareStatement (sql);
+			prepareStatement.setString (1, itemName);
+			prepareStatement.setString (2, itemGenre);
+			result = prepareStatement.executeQuery();
+			result.next ();
+			itemId = result.getInt ("id");
+			
 			conn.close ();
+			
+			if (loadImage) {
+				Utils.copyLoadImageTo("groups", itemId);
+				loadImage = false;
+			}
 		}
 		catch (Exception e) {
 			System.out.println ("Error in add item: " + e);
@@ -137,6 +186,11 @@ public class ModuleGroupsBean implements Serializable {
 			prepareStatement.setString (6, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
+			
+			if (loadImage) {
+				Utils.copyLoadImageTo("groups", itemId);
+				loadImage = false;
+			}
 		}
 		catch (Exception e) {
 			System.out.println ("Error in update item: " + e);
