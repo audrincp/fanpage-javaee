@@ -1,12 +1,48 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://java.sun.com/jsf/html">
-    <h:head>
-        <title>Facelet Title</title>
-    </h:head>
-    <h:body>
-        Hello from Facelets
-    </h:body>
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Fan Page</title>
+		<meta name="title" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+	</h:head>
+	<h:body>
+		<h:form>
+			<h:inputText value="#{site.searchField}" />
+			<h:commandButton value="Поиск" action="search" />
+		</h:form>
+		<table border="1">
+			<ui:repeat value="#{site.news}" var="newsItem">
+				<tr>
+					<td>
+						<h:graphicImage width="150" url="#{newsItem.getImageSrc()}" />
+					</td>
+					<td>
+						<h:outputText value="#{newsItem.getTitle()}" />
+					</td>
+					<td>
+						<h:outputText value="#{newsItem.getPublicationDate()}" />
+					</td>
+					<td>
+						<h:outputText value="#{newsItem.getShortText()}" />
+					</td>
+					<td>
+						<a href="/news.xhtml?id=#{newsItem.getId()}">Читать далее</a>
+					</td>
+				</tr>
+			</ui:repeat>
+		</table>
+		<h:form>
+			<h:commandButton value="в начало" action="#{site.setPage(1)}" />
+			<h:commandButton rendered="#{site.getIsPageExists(-1)}" value="#{site.getPageNumber(-1)}" action="#{site.setDiffPage(-1)}" />
+			<h:commandButton rendered="#{site.getIsPageExists(0)}" value="#{site.getPageNumber(0)}" action="#{site.setDiffPage(0)}" />
+			<h:commandButton rendered="#{site.getIsPageExists(1)}" value="#{site.getPageNumber(1)}" action="#{site.setDiffPage(1)}" />
+			<h:commandButton value="в конец" action="#{site.setPageCount()}" />
+		</h:form>
+	</h:body>
 </html>
-
