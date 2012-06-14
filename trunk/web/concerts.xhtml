@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Fan Page</title>
+		<meta name="title" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+	</h:head>
+	<h:body>
+		<table border="1">
+			<ui:repeat value="#{page_concerts.concerts}" var="concert">
+				<tr>
+					<td>
+						<h:graphicImage width="150" url="#{concert.getImageSrc()}" />
+					</td>
+					<td>
+						<table border="1">
+							<ui:repeat value="#{concert.getGroups()}" var="group">
+								<tr>
+									<td>
+										<h:form>
+											<h:commandButton value="#{group.getName()}" action="#{page_group.setCurrentGroup(group.getId())}" />
+										</h:form>
+									</td>
+								</tr>
+							</ui:repeat>
+						</table>
+					</td>
+					<td>
+						<h:form>
+							<h:commandButton value="#{concert.getDate()} #{concert.getCountry()} #{concert.getPlace()}" action="#{page_concert.setCurrentConcert(concert.getId())}" />
+						</h:form>
+					</td>
+				</tr>
+			</ui:repeat>
+		</table>
+	</h:body>
+</html>

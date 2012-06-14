@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Fan Page</title>
+		<meta name="title" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+	</h:head>
+	<h:body>
+		<table border="1">
+			<tr><td>
+				<h:graphicImage width="150" url="#{page_news.getCurrentNews().getImageSrc()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_news.getCurrentNews().getTitle()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_news.getCurrentNews().getPublicationDate()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_news.getCurrentNews().getText()}" />
+			</td></tr>
+		</table>
+	</h:body>
+</html>

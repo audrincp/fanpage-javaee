@@ -12,12 +12,12 @@
 		<meta name="description" content="" />
 	</h:head>
 	<h:body>
-		<h:form>
-			<h:inputText value="#{site.searchField}" />
+		<!--<h:form>
+			<h:inputText value="# {page_search.searchField}" />
 			<h:commandButton value="Поиск" action="search" />
-		</h:form>
+		</h:form>-->
 		<table border="1">
-			<ui:repeat value="#{site.news}" var="newsItem">
+			<ui:repeat value="#{page_index.news}" var="newsItem">
 				<tr>
 					<td>
 						<h:graphicImage width="150" url="#{newsItem.getImageSrc()}" />
@@ -32,17 +32,19 @@
 						<h:outputText value="#{newsItem.getShortText()}" />
 					</td>
 					<td>
-						<a href="/news.xhtml?id=#{newsItem.getId()}">Читать далее</a>
+						<h:form>
+							<h:commandButton value="Читать далее" action="#{page_news.setCurrentNews(newsItem.getId())}" />
+						</h:form>
 					</td>
 				</tr>
 			</ui:repeat>
 		</table>
 		<h:form>
-			<h:commandButton value="в начало" action="#{site.setPage(1)}" />
-			<h:commandButton rendered="#{site.getIsPageExists(-1)}" value="#{site.getPageNumber(-1)}" action="#{site.setDiffPage(-1)}" />
-			<h:commandButton rendered="#{site.getIsPageExists(0)}" value="#{site.getPageNumber(0)}" action="#{site.setDiffPage(0)}" />
-			<h:commandButton rendered="#{site.getIsPageExists(1)}" value="#{site.getPageNumber(1)}" action="#{site.setDiffPage(1)}" />
-			<h:commandButton value="в конец" action="#{site.setPageCount()}" />
+			<h:commandButton value="в начало" action="#{page_index.setPage(1)}" />
+			<h:commandButton rendered="#{page_index.getIsPageExists(-1)}" value="#{page_index.getPageNumber(-1)}" action="#{page_index.setDiffPage(-1)}" />
+			<h:commandButton rendered="#{page_index.getIsPageExists(0)}" value="#{page_index.getPageNumber(0)}" action="#{page_index.setDiffPage(0)}" />
+			<h:commandButton rendered="#{page_index.getIsPageExists(1)}" value="#{page_index.getPageNumber(1)}" action="#{page_index.setDiffPage(1)}" />
+			<h:commandButton value="в конец" action="#{page_index.setPageCount()}" />
 		</h:form>
 	</h:body>
 </html>

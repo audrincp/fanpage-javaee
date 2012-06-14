@@ -8,20 +8,21 @@ import java.sql.*;
 import corejsf.*;
 import java.util.ArrayList;
 
-@Named("site")
+@Named("page_index")
 @SessionScoped
-public class SiteBean implements Serializable {
-	public SiteBean () {
+public class PageIndexBean implements Serializable {
+	public PageIndexBean () {
 		currentPage = 1;
 		countItemsInPage = 1;
+        System.out.println ("dscnsdkcmklsm");
 	}
 	
 	private int currentPage;
 	private int countItemsInPage;
 	public int getPage () { return currentPage; }
-	public void setPage (String pageStr) { currentPage = Integer.parseInt (pageStr); }
-	public void setDiffPage (String pageDiffStr) { currentPage += Integer.parseInt (pageDiffStr); }
-	public void setPageCount () { currentPage = countPages; }
+	public String setPage (String pageStr) { currentPage = Integer.parseInt (pageStr); return null; }
+	public String setDiffPage (String pageDiffStr) { currentPage += Integer.parseInt (pageDiffStr); return null; }
+	public String setPageCount () { currentPage = countPages; return null; }
 	private int getFirstItemInPage () { return (currentPage - 1) * countItemsInPage + 1; }
 	public int getPageNumber (int add) {
 		if (currentPage + add > getCountPages ())
@@ -55,21 +56,8 @@ public class SiteBean implements Serializable {
 		return null;
 	}
 	private void setCountNews () {
-		try {
-			Connection conn = DBController.getConnection ();
-			
 			countItemsInPage = 5;
-			String sql = "SELECT COUNT(*) FROM fp_news";
-			PreparedStatement ps = conn.prepareStatement (sql);
-			ResultSet result = ps.executeQuery ();
-			result.next ();
-			countPages = (int)Math.ceil ((double)result.getInt (1) / (double)countItemsInPage);
-			
-			conn.close ();
-		}
-		catch (Exception e) {
-			System.out.println ("Error in setCountNews:" + e);
-		}
+			countPages = (int)Math.ceil ((double)News.getCount () / (double)countItemsInPage);
 	}
 	public News[] getNews () {
 		setCountNews ();
@@ -97,8 +85,4 @@ public class SiteBean implements Serializable {
 			array[i ++] = (News)item;
 		return array;
 	}
-	
-	private String searchField;
-	public String getSearchField () { return searchField; }
-	public void setSearchField (String value) { searchField = value; }
 }

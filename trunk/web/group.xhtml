@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Fan Page</title>
+		<meta name="title" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+	</h:head>
+	<h:body>
+		<b>Информация о группе</b><br />
+		<table border="1">
+			<tr><td>
+				<h:graphicImage rendered="#{page_group.getCurrentGroup().isExistsImage()}" width="150" url="#{page_group.getCurrentGroup().getImageSrc()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_group.getCurrentGroup().getName()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_group.getCurrentGroup().getGenre()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_group.getCurrentGroup().getBeginDate()}" /> - <h:outputText value="#{page_group.getCurrentGroup().getEndDate()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_group.getCurrentGroup().getDescription()}" />
+			</td></tr>
+		</table>
+		<br />
+		<b>Состав группы</b><br />
+		<table border="1">
+			<ui:repeat value="#{page_group.getCurrentGroup().getPerformers()}" var="performer">
+				<tr>
+					<td>
+						<h:form>
+							<h:commandButton value="#{performer.getFullName ()}" action="#{page_performer.setCurrentPerformer(performer.getId())}" />
+						</h:form>
+					</td>
+					<td><h:outputText value="#{performer.getPeriod ()}" /></td>
+				</tr>
+			</ui:repeat>
+		</table>
+		<br />
+		<b>Альбомы</b><br />
+		<table border="1">
+			<ui:repeat value="#{page_group.getCurrentGroup().getAlbums()}" var="album">
+				<tr>
+					<td>
+						<h:graphicImage rendered="#{album.isExistsImage()}" width="150" url="#{album.getImageSrc()}" />
+					</td>
+					<td>
+						<h:form>
+							<h:commandButton value="#{album.getName()}" action="#{page_album.setCurrentAlbum(album.getId())}" />
+						</h:form>
+					</td>
+					<td>
+						<h:outputText value="#{album.getDate()}" />
+					</td>
+				</tr>
+			</ui:repeat>
+		</table>
+		<br />
+		<b>Награды</b><br />
+		<table border="1">
+			<ui:repeat value="#{page_group.getCurrentGroup().getPrizes()}" var="prize">
+				<tr>
+					<td>
+						<h:outputText value="#{prize.getName()}" />
+					</td>
+					<td>
+						<h:outputText value="#{prize.getDate()}" />
+					</td>
+					<td>
+						<h:outputText value="#{prize.getPlace()}" />
+					</td>
+				</tr>
+			</ui:repeat>
+		</table>
+		<b>Концерты</b><br />
+		<table border="1">
+			<ui:repeat value="#{page_group.getCurrentGroup().getConcerts()}" var="concert">
+				<tr>
+					<td>
+						<h:form>
+							<h:commandButton value="#{concert.getDate()} #{concert.getCountry()} #{concert.getPlace()}" action="#{page_concert.setCurrentConcert(concert.getId())}" />
+						</h:form>
+					</td>
+				</tr>
+			</ui:repeat>
+		</table>
+	</h:body>
+</html>
