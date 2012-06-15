@@ -14,7 +14,6 @@ public class PageIndexBean implements Serializable {
 	public PageIndexBean () {
 		currentPage = 1;
 		countItemsInPage = 1;
-        System.out.println ("dscnsdkcmklsm");
 	}
 	
 	private int currentPage;

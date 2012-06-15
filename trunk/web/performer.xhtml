@@ -6,43 +6,75 @@
 	  xmlns:ui="http://java.sun.com/jsf/facelets">
 	<h:head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<title>Fan Page</title>
-		<meta name="title" content="" />
+		<title><h:outputText value="#{page_performer.getCurrentPerformer().getFullName()}" /></title>
 		<meta name="keywords" content="" />
 		<meta name="description" content="" />
+		<link rel="stylesheet" href="resources/css/style2.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="resources/css/style.css" type="text/css" />
 	</h:head>
 	<h:body>
-		<table border="1">
-			<tr>
-				<td>
-					<h:graphicImage width="150" url="#{page_performer.getCurrentPerformer().getImageSrc()}" />
-				</td>
-				<td>
-					<h:outputText value="#{page_performer.getCurrentPerformer().getFullName()}" />
-				</td>
-				<td>
-					<h:outputText value="#{page_performer.getCurrentPerformer().getBirthDate()} #{page_performer.getCurrentPerformer().getDeathDate()}" />
-				</td>
-				<td>
-					<h:outputText value="#{page_performer.getCurrentPerformer().getCountry()}" />
-				</td>
-				<td>
-					<table border="1">
-						<ui:repeat value="#{page_performer.getCurrentPerformer().getGroups()}" var="group">
-							<tr>
-								<td>
-									<h:form>
-										<h:commandButton value="#{group.getName()}" action="#{page_group.setCurrentGroup(group.getId())}" />
-									</h:form>
-								</td>
-							</tr>
-						</ui:repeat>
-					</table>
-				</td>
-				<td>
-					<h:outputText value="#{page_performer.getCurrentPerformer().getDescription()}" />
-				</td>
-			</tr>
-		</table>
+		<div id="wrapper">
+			<div id="header">
+				<div class="header_logo">
+					<form class="form">
+						<input class="form_text" type="text" placeholder="Поиск..." />
+						<input class="form_submit" type="button" />
+					</form>
+				</div>
+				<div class="logo"></div>
+			</div>
+			<div id="middle">
+				<div id="container">
+					<div id="content">
+						<div class="middle_header"><h:outputText value="#{page_performer.getCurrentPerformer().getFullName()}" /></div>
+						<div style="overflow:hidden;display:block;">
+							<div style="overflow:hidden;display:block; float:left;"><h:graphicImage rendered="#{page_performer.getCurrentPerformer().isExistsImage()}" styleClass="group_photo" url="#{page_performer.getCurrentPerformer().getImageSrc()}" /></div>
+							<div style="overflow:hidden;display:block" class="group_description">
+								<p><h:outputText value="#{page_performer.getCurrentPerformer().getDescription()}" /></p>
+							</div>
+						
+						<div class="group_information">
+							<div class="inf_header">
+								Основная информация
+							</div>
+							<div class="genre">
+								<p class="group_disc_h">Дата рождения</p>
+								<p class="group_disc"><h:outputText value="#{page_performer.getCurrentPerformer().getBirthDate()}" /></p>
+							</div>
+							<div class="data">
+								<p class="group_disc_h">Место рождения</p>
+								<p class="group_disc"><h:outputText value="#{page_performer.getCurrentPerformer().getPlace()}" /></p>
+							</div>
+							<div class="data">
+								<p class="group_disc_h">Страна</p>
+								<p class="group_disc"><h:outputText value="#{page_performer.getCurrentPerformer().getCountry()}" /></p>
+							</div>
+							<div class="label">
+								<p class="group_disc_h">Группы</p>
+								<ul class="list">
+									<ui:repeat value="#{page_performer.getCurrentPerformer().getGroups()}" var="group">
+										<h:form>
+											<h:commandButton styleClass="label_links" value="#{group.getName()}" action="#{page_group.setCurrentGroup(group.getId())}" />
+										</h:form>
+									</ui:repeat>
+								</ul>
+							</div>
+						</div>
+					</div>
+						
+					</div>
+				</div>
+				<div class="sidebar" id="sideLeft">
+					<div class="left_header">
+					</div>
+					<ul class="left_menu">
+						<li class="menu_text"><a class="menu_a" href="index.xhtml">News</a></li>
+						<li class="menu_text"><a class="menu_a" href="groups.xhtml">Groups</a></li>
+						<li class="menu_text"><a class="menu_a" href="concerts.xhtml">Concerts</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footer"></div>
 	</h:body>
 </html>

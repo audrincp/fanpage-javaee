@@ -7,27 +7,58 @@
 	<h:head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>Fan Page</title>
-		<meta name="title" content="" />
 		<meta name="keywords" content="" />
 		<meta name="description" content="" />
+		<link rel="stylesheet" href="resources/css/style2.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="resources/css/style.css" type="text/css" />
 	</h:head>
+
 	<h:body>
-		<table border="1">
-			<ui:repeat value="#{page_groups.groups}" var="group">
-				<tr>
-					<td>
-						<h:graphicImage width="150" url="#{group.getImageSrc()}" />
-					</td>
-					<td>
-						<h:form>
-							<h:commandButton value="#{group.getName()}" action="#{page_group.setCurrentGroup(group.getId())}" />
-						</h:form>
-					</td>
-					<td>
-						<h:outputText value="#{group.getGenre()}" />
-					</td>
-				</tr>
-			</ui:repeat>
-		</table>
+		<div id="wrapper">
+			<div id="header">
+				<div class="header_logo">
+					<form class="form">
+						<input class="form_text" type="text" placeholder="Поиск..." />
+						<input class="form_submit" type="button" />
+					</form>
+				</div>
+				<div class="logo"></div>
+			</div>
+			<div id="middle">
+				<div id="container">
+					<div id="content">
+						<div class="middle_header">
+						Groups
+						</div>
+						<ui:repeat value="#{page_groups.groups}" var="group">
+							<div class="middle_new_pack">
+								<h:graphicImage styleClass="middle_new_pack_img" rendered="#{group.isExistsImage()}" url="#{group.getImageSrc()}" />
+								<div class="middle_new_pack_left">
+									<div class="middle_new_pack_header">
+										<h:form>
+											<h:commandButton styleClass="middle_header_href" value="#{group.getName()}" action="#{page_group.setCurrentGroup(group.getId())}" />
+										</h:form>
+									</div>
+									<div class="middle_new_pack_text">
+										<h:outputText value="#{group.getGenre()}" />
+									</div>
+								</div>
+							</div>
+						</ui:repeat>
+					</div>
+				</div>
+				<div class="sidebar" id="sideLeft">
+					<div class="left_header">
+					</div>
+					<ul class="left_menu">
+						<li class="menu_text"><a class="menu_a" href="index.xhtml">News</a></li>
+						<li class="menu_text"><a class="menu_a" href="groups.xhtml">Groups</a></li>
+						<li class="menu_text"><a class="menu_a" href="concerts.xhtml">Concerts</a></li>
+						<!--<li class="menu_text"><input class="menu_a" type="submit" value = "Concert"></li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footer"></div>
 	</h:body>
 </html>

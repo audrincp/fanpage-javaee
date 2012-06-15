@@ -40,7 +40,7 @@ public class Group {
 		return beginDate;
 	}
 	public String getEndDate () {
-		return endDate;
+		return endDate.length() > 0 ? endDate : "настоящее время";
 	}
 	public String getDescription () {
 		return description;

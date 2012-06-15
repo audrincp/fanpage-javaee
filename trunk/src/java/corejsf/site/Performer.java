@@ -14,6 +14,7 @@ public class Performer {
 	private String birthDate;
 	private String deathDate;
 	private String country;
+        private String place;
 	
 	public Performer (ResultSet result) {
 		try {
@@ -23,6 +24,7 @@ public class Performer {
 			birthDate = Utils.toNormDate (result.getString ("born_date"));
 			deathDate = Utils.toNormDate (result.getString ("death"));
 			country = result.getString ("country");
+                        place = result.getString ("born_place");
 			description = result.getString ("description");
 		}
 		catch (Exception e) {
@@ -76,6 +78,9 @@ public class Performer {
 	}
 	public String getCountry () {
 		return country;
+	}
+        public String getPlace () {
+		return place;
 	}
 	
 	public String getImageSrc () {

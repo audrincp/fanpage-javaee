@@ -6,91 +6,94 @@
 	  xmlns:ui="http://java.sun.com/jsf/facelets">
 	<h:head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<title>Fan Page</title>
-		<meta name="title" content="" />
+		<title><h:outputText value="#{page_group.getCurrentGroup().getName()}" /></title>
 		<meta name="keywords" content="" />
 		<meta name="description" content="" />
+		<link rel="stylesheet" href="resources/css/style2.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="resources/css/style.css" type="text/css" />
 	</h:head>
 	<h:body>
-		<b>Информация о группе</b><br />
-		<table border="1">
-			<tr><td>
-				<h:graphicImage rendered="#{page_group.getCurrentGroup().isExistsImage()}" width="150" url="#{page_group.getCurrentGroup().getImageSrc()}" />
-			</td></tr>
-			<tr><td>
-				<h:outputText value="#{page_group.getCurrentGroup().getName()}" />
-			</td></tr>
-			<tr><td>
-				<h:outputText value="#{page_group.getCurrentGroup().getGenre()}" />
-			</td></tr>
-			<tr><td>
-				<h:outputText value="#{page_group.getCurrentGroup().getBeginDate()}" /> - <h:outputText value="#{page_group.getCurrentGroup().getEndDate()}" />
-			</td></tr>
-			<tr><td>
-				<h:outputText value="#{page_group.getCurrentGroup().getDescription()}" />
-			</td></tr>
-		</table>
-		<br />
-		<b>Состав группы</b><br />
-		<table border="1">
-			<ui:repeat value="#{page_group.getCurrentGroup().getPerformers()}" var="performer">
-				<tr>
-					<td>
-						<h:form>
-							<h:commandButton value="#{performer.getFullName ()}" action="#{page_performer.setCurrentPerformer(performer.getId())}" />
-						</h:form>
-					</td>
-					<td><h:outputText value="#{performer.getPeriod ()}" /></td>
-				</tr>
-			</ui:repeat>
-		</table>
-		<br />
-		<b>Альбомы</b><br />
-		<table border="1">
-			<ui:repeat value="#{page_group.getCurrentGroup().getAlbums()}" var="album">
-				<tr>
-					<td>
-						<h:graphicImage rendered="#{album.isExistsImage()}" width="150" url="#{album.getImageSrc()}" />
-					</td>
-					<td>
-						<h:form>
-							<h:commandButton value="#{album.getName()}" action="#{page_album.setCurrentAlbum(album.getId())}" />
-						</h:form>
-					</td>
-					<td>
-						<h:outputText value="#{album.getDate()}" />
-					</td>
-				</tr>
-			</ui:repeat>
-		</table>
-		<br />
-		<b>Награды</b><br />
-		<table border="1">
-			<ui:repeat value="#{page_group.getCurrentGroup().getPrizes()}" var="prize">
-				<tr>
-					<td>
-						<h:outputText value="#{prize.getName()}" />
-					</td>
-					<td>
-						<h:outputText value="#{prize.getDate()}" />
-					</td>
-					<td>
-						<h:outputText value="#{prize.getPlace()}" />
-					</td>
-				</tr>
-			</ui:repeat>
-		</table>
-		<b>Концерты</b><br />
-		<table border="1">
-			<ui:repeat value="#{page_group.getCurrentGroup().getConcerts()}" var="concert">
-				<tr>
-					<td>
-						<h:form>
-							<h:commandButton value="#{concert.getDate()} #{concert.getCountry()} #{concert.getPlace()}" action="#{page_concert.setCurrentConcert(concert.getId())}" />
-						</h:form>
-					</td>
-				</tr>
-			</ui:repeat>
-		</table>
+		<div id="wrapper">
+			<div id="header">
+				<div class="header_logo">
+					<form class="form">
+						<input class="form_text" type="text" placeholder="Поиск..." />
+						<input class="form_submit" type="button" />
+					</form>
+				</div>
+				<div class="logo"></div>
+			</div>
+			<div id="middle">
+				<div id="container">
+					<div id="content">
+						<div class="middle_header"><h:outputText value="#{page_group.getCurrentGroup().getName()}" /></div>
+						<div style="overflow:hidden;display:block;">
+							<div style="overflow:hidden;display:block; float:left;"><h:graphicImage styleClass="group_photo" rendered="#{page_group.getCurrentGroup().isExistsImage()}" url="#{page_group.getCurrentGroup().getImageSrc()}" /></div>
+							<div style="overflow:hidden;display:block" class="group_description">
+								<p><h:outputText value="#{page_group.getCurrentGroup().getDescription()}" /></p>
+								<div class="group_consist">
+									<p class="group_consist_h">Состав:</p>
+									<ul class="list">
+										<ui:repeat value="#{page_group.getCurrentGroup().getPerformers()}" var="performer">
+										<li>
+											<h:form>
+												<h:commandButton styleClass="group_consist_author" value="#{performer.getFullName ()}" action="#{page_performer.setCurrentPerformer(performer.getId())}" />
+											</h:form>
+										</li>
+										</ui:repeat>
+									</ul>
+								</div>
+								<div class="group_album">
+									<p class="group_consist_h">Альбомы:</p>
+									<ul class="list">
+										<ui:repeat value="#{page_group.getCurrentGroup().getAlbums()}" var="album">
+											<li>
+												<h:form>
+													<h:commandButton styleClass="group_consist_album" value="#{album.getName()}" action="#{page_album.setCurrentAlbum(album.getId())}" />
+												</h:form>
+											</li>
+										</ui:repeat>
+									</ul>
+								</div>
+							</div>
+						
+						<div class="group_information">
+							<div class="inf_header">
+								Основная информация
+							</div>
+							<div class="genre">
+								<p class="group_disc_h">Жанр</p>
+								<p class="group_disc"><h:outputText value="#{page_group.getCurrentGroup().getGenre()}" /></p>
+							</div>
+							<div class="data">
+								<p class="group_disc_h">Годы</p>
+								<p class="group_disc"><h:outputText value="#{page_group.getCurrentGroup().getBeginDate()}" /> - <h:outputText value="#{page_group.getCurrentGroup().getEndDate()}" /></p>
+							</div>
+							<!--<div class="label">
+								<p class="group_disc_h">Лейблы</p>
+								<ul class="list">
+									<li><input class="label_links" type="submit" value = "RCA"></li>
+									<li><input class="label_links" type="submit" value = "Mercury"></li>
+								</ul>
+							</div>-->
+							
+						
+						</div>
+					</div>
+						
+					</div>
+				</div>
+				<div class="sidebar" id="sideLeft">
+					<div class="left_header">
+					</div>
+					<ul class="left_menu">
+						<li class="menu_text"><a class="menu_a" href="index.xhtml">News</a></li>
+						<li class="menu_text"><a class="menu_a" href="groups.xhtml">Groups</a></li>
+						<li class="menu_text"><a class="menu_a" href="concerts.xhtml">Concerts</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footer"></div>
 	</h:body>
 </html>
