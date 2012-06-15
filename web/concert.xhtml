@@ -6,51 +6,61 @@
 	  xmlns:ui="http://java.sun.com/jsf/facelets">
 	<h:head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
-		<title>Fan Page</title>
-		<meta name="title" content="" />
+		<title><h:outputText value="#{page_concert.getCurrentConcert().getPlace()}" /> <h:outputText value="#{page_concert.getCurrentConcert().getDate()}" /></title>
 		<meta name="keywords" content="" />
 		<meta name="description" content="" />
+		<link rel="stylesheet" href="resources/css/style2.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="resources/css/style.css" type="text/css" />
 	</h:head>
 	<h:body>
-		<table border="1">
-			<tr>
-				<td>
-					<h:graphicImage width="150" url="#{page_concert.getCurrentConcert().getImageSrc()}" />
-				</td>
-				<td>
-					<h:outputText value="#{page_concert.getCurrentConcert().getCountry()}" />
-				</td>
-				<td>
-					<h:outputText value="#{page_concert.getCurrentConcert().getPlace()}" />
-				</td>
-				<td>
-					<h:outputText value="#{page_concert.getCurrentConcert().getDate()}" />
-				</td>
-				<td>
-					<h:outputText value="#{page_concert.getCurrentConcert().getDescription()}" />
-				</td>
-				<td>
-					<table border="1">
-						<ui:repeat value="#{page_concert.getCurrentConcert().getTracks()}" var="track">
-							<tr>
-								<td>
-									<h:form>
-										<h:commandButton value="#{track.getGroup().getName()}" action="#{page_group.setCurrentGroup(track.getGroup().getId())}" />
-									</h:form>
-								</td>
-								<td>
-									<h:form>
-										<h:commandButton value="#{track.getName()}" action="#{page_album.setCurrentAlbum(track.getAlbum().getId())}" />
-									</h:form>
-								</td>
-							</tr>
-						</ui:repeat>
-					</table>
-				</td>
-				<td>
-					<h:outputText value="#{page_performer.getCurrentPerformer().getDescription()}" />
-				</td>
-			</tr>
-		</table>
+		<div id="wrapper">
+			<div id="header">
+				<div class="header_logo">
+					<form class="form">
+						<input class="form_text" type="text" placeholder="Поиск..." />
+						<input class="form_submit" type="button" />
+					</form>
+				</div>
+				<div class="logo"></div>
+			</div>
+			<div id="middle">
+				<div id="container">
+					<div id="content">
+						<div class="middle_header"><h:outputText value="#{page_concert.getCurrentConcert().getCountry()}" /> <h:outputText value="#{page_concert.getCurrentConcert().getPlace()}" /> <h:outputText value="#{page_concert.getCurrentConcert().getDate()}" /></div>
+						<div style="overflow:hidden;display:block;">
+							<div style="overflow:hidden;display:block; float:left;"><h:graphicImage styleClass="group_photo" rendered="#{page_concert.getCurrentConcert().isExistsImage()}" url="#{page_concert.getCurrentConcert().getImageSrc()}" /></div>
+							<div style="overflow:hidden;display:block" class="group_description">
+								<p><h:outputText value="#{page_concert.getCurrentConcert().getDescription()}" /></p>
+								<div class="group_consist">
+									<p class="group_consist_h">Композиции:</p>
+									<ul class="list">
+										<ui:repeat value="#{page_concert.getCurrentConcert().getTracks()}" var="track">
+										<li>
+											<h:form style="float: left;">
+												<h:commandButton styleClass="group_consist_author" value="#{track.getGroup().getName()}" action="#{page_group.setCurrentGroup(track.getGroup().getId())}" />
+											</h:form>
+											<h:form style="float: left; padding-left: 12px;">
+												<h:commandButton styleClass="group_consist_author" value="#{track.getName()}" action="#{page_album.setCurrentAlbum(track.getAlbum().getId())}" />
+											</h:form>
+										</li>
+										</ui:repeat>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="sidebar" id="sideLeft">
+					<div class="left_header">
+					</div>
+					<ul class="left_menu">
+						<li class="menu_text"><a class="menu_a" href="index.xhtml">News</a></li>
+						<li class="menu_text"><a class="menu_a" href="groups.xhtml">Groups</a></li>
+						<li class="menu_text"><a class="menu_a" href="concerts.xhtml">Concerts</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footer"></div>
 	</h:body>
 </html>

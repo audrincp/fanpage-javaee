@@ -1,0 +1,104 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+html {
+	height: 100%;
+}
+body {
+	font: 12px/18px Arial, Tahoma, Verdana, sans-serif;
+	width: 100%;
+	height: 100%;
+}
+a {
+	color: blue;
+	outline: none;
+	text-decoration: underline;
+}
+a:hover {
+	text-decoration: none;
+}
+p {
+	margin: 0 0 18px
+}
+img {
+	border: none;
+}
+input {
+	vertical-align: middle;
+}
+#wrapper {
+	width: 1000px;
+	margin: 0 auto;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	background-image: url(../img/background.png);
+	background-repeat: repeat-y;
+}
+
+
+/* Header
+-----------------------------------------------------------------------------*/
+#header {
+	height: 210px;
+}
+
+
+/* Middle
+-----------------------------------------------------------------------------*/
+#middle {
+	width: 100%;
+	padding: 0 0 90px;
+	margin-top:40px;
+	height: 1%;
+	position: relative;
+}
+#middle:after {
+	content: '.';
+	display: block;
+	clear: both;
+	visibility: hidden;
+	height: 0;
+}
+#container {
+	width: 100%;
+	float: left;
+	overflow: hidden;
+	padding-bottom:20px;
+}
+#content {
+	padding-top:30px;
+	padding-left:10px;
+	padding-right:10px;
+	padding-bottom:30px;
+	margin-left:30%;
+	width:600px;
+	border-radius:10px 10px 5px 5px;
+	background-color:#eaecf0;
+}
+
+
+/* Sidebar Left
+-----------------------------------------------------------------------------*/
+#sideLeft {
+	margin-top:-50px;
+	float: left;
+	width: 200px;
+	margin-left: -97%;
+	position: relative;
+	border-radius:10px 10px 5px 5px;
+	background-color:#c8cacd;
+	padding-bottom:30px;
+}
+
+
+/* Footer
+-----------------------------------------------------------------------------*/
+.footer {
+	width: 1000px;
+	margin: -90px auto 0;
+	height: 90px;
+	background: #BFF08E;
+	position: relative;
+}

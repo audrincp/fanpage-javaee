@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Fan Page</title>
+		<meta name="title" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+	</h:head>
+	<h:body>
+		<!--<h:form>
+			<h:inputText value="# {page_search.searchField}" />
+			<h:commandButton value="Поиск" action="search" />
+		</h:form>-->
+		<table border="1">
+			<ui:repeat value="#{page_index.news}" var="newsItem">
+				<tr>
+					<td>
+						<h:graphicImage width="150" url="#{newsItem.getImageSrc()}" />
+					</td>
+					<td>
+						<h:outputText value="#{newsItem.getTitle()}" />
+					</td>
+					<td>
+						<h:outputText value="#{newsItem.getPublicationDate()}" />
+					</td>
+					<td>
+						<h:outputText value="#{newsItem.getShortText()}" />
+					</td>
+					<td>
+						<h:form>
+							<h:commandButton value="Читать далее" action="#{page_news.setCurrentNews(newsItem.getId())}" />
+						</h:form>
+					</td>
+				</tr>
+			</ui:repeat>
+		</table>
+		<h:form>
+			<h:commandButton value="в начало" action="#{page_index.setPage(1)}" />
+			<h:commandButton rendered="#{page_index.getIsPageExists(-1)}" value="#{page_index.getPageNumber(-1)}" action="#{page_index.setDiffPage(-1)}" />
+			<h:commandButton rendered="#{page_index.getIsPageExists(0)}" value="#{page_index.getPageNumber(0)}" action="#{page_index.setDiffPage(0)}" />
+			<h:commandButton rendered="#{page_index.getIsPageExists(1)}" value="#{page_index.getPageNumber(1)}" action="#{page_index.setDiffPage(1)}" />
+			<h:commandButton value="в конец" action="#{page_index.setPageCount()}" />
+		</h:form>
+	</h:body>
+</html>

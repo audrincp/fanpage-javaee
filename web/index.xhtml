@@ -7,44 +7,68 @@
 	<h:head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 		<title>Fan Page</title>
-		<meta name="title" content="" />
 		<meta name="keywords" content="" />
 		<meta name="description" content="" />
+		<link rel="stylesheet" href="resources/css/style2.css" type="text/css" media="screen, projection" />
+		<link rel="stylesheet" href="resources/css/style.css" type="text/css" />
 	</h:head>
+
 	<h:body>
-		<!--<h:form>
-			<h:inputText value="# {page_search.searchField}" />
-			<h:commandButton value="Поиск" action="search" />
-		</h:form>-->
-		<table border="1">
-			<ui:repeat value="#{page_index.news}" var="newsItem">
-				<tr>
-					<td>
-						<h:graphicImage width="150" url="#{newsItem.getImageSrc()}" />
-					</td>
-					<td>
-						<h:outputText value="#{newsItem.getTitle()}" />
-					</td>
-					<td>
-						<h:outputText value="#{newsItem.getPublicationDate()}" />
-					</td>
-					<td>
-						<h:outputText value="#{newsItem.getShortText()}" />
-					</td>
-					<td>
-						<h:form>
-							<h:commandButton value="Читать далее" action="#{page_news.setCurrentNews(newsItem.getId())}" />
-						</h:form>
-					</td>
-				</tr>
-			</ui:repeat>
-		</table>
-		<h:form>
-			<h:commandButton value="в начало" action="#{page_index.setPage(1)}" />
-			<h:commandButton rendered="#{page_index.getIsPageExists(-1)}" value="#{page_index.getPageNumber(-1)}" action="#{page_index.setDiffPage(-1)}" />
-			<h:commandButton rendered="#{page_index.getIsPageExists(0)}" value="#{page_index.getPageNumber(0)}" action="#{page_index.setDiffPage(0)}" />
-			<h:commandButton rendered="#{page_index.getIsPageExists(1)}" value="#{page_index.getPageNumber(1)}" action="#{page_index.setDiffPage(1)}" />
-			<h:commandButton value="в конец" action="#{page_index.setPageCount()}" />
-		</h:form>
+		<div id="wrapper">
+			<div id="header">
+				<div class="header_logo">
+					<form class="form">
+						<input class="form_text" type="text" placeholder="Поиск..." />
+						<input class="form_submit" type="button" />
+					</form>
+				</div>
+				<div class="logo"></div>
+			</div>
+			<div id="middle">
+				<div id="container">
+					<div id="content">
+						<div class="middle_header">
+						News
+						</div>
+						<ui:repeat value="#{page_index.news}" var="newsItem">
+							<div class="middle_new_pack">
+								<h:graphicImage styleClass="middle_new_pack_img" rendered="#{newsItem.isExistsImage()}" url="#{newsItem.getImageSrc()}" />
+								<div class="middle_new_pack_left">
+									<div class="middle_new_pack_header">
+										<h:outputText value="#{newsItem.getTitle()}" />
+									</div>
+									<div class="middle_new_pack_text">
+										<h:outputText value="#{newsItem.getShortText()}" />
+									</div>
+									<h:form>
+										<h:commandButton styleClass="brow" value="Читать дальше&#8594;" action="#{page_news.setCurrentNews(newsItem.getId())}" />
+									</h:form>
+								</div>
+							</div>
+						</ui:repeat>
+						<div class="down_button">
+							<h:form>
+								<h:commandButton styleClass="down_button_link" value="&#8592;" action="#{page_index.setPage(1)}" />
+								<h:commandButton styleClass="down_button_link" rendered="#{page_index.getIsPageExists(-1)}" value="#{page_index.getPageNumber(-1)}" action="#{page_index.setDiffPage(-1)}" />
+								<h:commandButton styleClass="down_button_link" rendered="#{page_index.getIsPageExists(0)}" value="#{page_index.getPageNumber(0)}" action="#{page_index.setDiffPage(0)}" />
+								<h:commandButton styleClass="down_button_link" rendered="#{page_index.getIsPageExists(1)}" value="#{page_index.getPageNumber(1)}" action="#{page_index.setDiffPage(1)}" />
+								<h:commandButton styleClass="down_button_link" value="&#8594;" action="#{page_index.setPageCount()}" />
+							</h:form>
+						</div>
+					</div>
+				</div>
+				<div class="sidebar" id="sideLeft">
+					<div class="left_header">
+					</div>
+					<ul class="left_menu">
+						<li class="menu_text"><a class="menu_a" href="index.xhtml">News</a></li>
+						<li class="menu_text"><a class="menu_a" href="groups.xhtml">Groups</a></li>
+						<li class="menu_text"><a class="menu_a" href="concerts.xhtml">Concerts</a></li>
+						<!--<li class="menu_text"><input class="menu_a" type="submit" value = "Concert"></li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footer"></div>
 	</h:body>
 </html>

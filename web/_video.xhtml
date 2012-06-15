@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+		<title>Fan Page</title>
+		<meta name="title" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+	</h:head>
+	<h:body>
+		<table border="1">
+			<tr><td>
+				<h:outputText value="#{page_video.getCurrentVideo().getName()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_video.getCurrentVideo().getTrack().getName()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_video.getCurrentVideo().getDuration()}" />
+			</td></tr>
+			<tr><td>
+				<h:outputText value="#{page_video.getCurrentVideo().getDescription()}" />
+			</td></tr>
+			<tr><td>
+				<iframe width="560" height="315" src="#{page_video.getCurrentVideo().getHref()}" frameborder="0" allowfullscreen="true"></iframe>
+			</td></tr>
+		</table>
+	</h:body>
+</html>
