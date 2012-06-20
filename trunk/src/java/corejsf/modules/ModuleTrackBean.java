@@ -180,7 +180,7 @@ public class ModuleTrackBean implements Serializable {
 			PreparedStatement prepareStatement = conn.prepareStatement (sql);
 			prepareStatement.setString (1, itemName);
 			prepareStatement.setString (2, itemLengthSeconds);
-			prepareStatement.setString (2, itemLabelId);
+			prepareStatement.setString (3, itemLabelId);
 			prepareStatement.setString (4, itemId + "");
 			ResultSet result = prepareStatement.executeQuery();
 			conn.close ();
