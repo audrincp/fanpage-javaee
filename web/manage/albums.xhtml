@@ -37,7 +37,7 @@
 								<ui:repeat value="#{module_albums.tableItems}" var="item">
 									<tr>
 										<td class="data">
-											<h:graphicImage rendered="#{module_concert.isImageExists(item.getId())}" width="150" url="#{item.getPublicValue(0)}" />
+											<h:graphicImage rendered="#{module_albums.isImageExists(item.getId())}" width="150" url="#{item.getPublicValue(0)}" />
 										</td>
 										<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(1)}" /></td>
 										<td class="data"><p jsfc="h:outputText" value="#{item.getPublicValue(2)}" /></td>

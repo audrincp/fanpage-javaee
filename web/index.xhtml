@@ -50,7 +50,7 @@
 							<h:form>
 								<h:commandButton styleClass="down_button_link" value="&#8592;" action="#{page_index.setPage(1)}" />
 								<h:commandButton styleClass="down_button_link" rendered="#{page_index.getIsPageExists(-1)}" value="#{page_index.getPageNumber(-1)}" action="#{page_index.setDiffPage(-1)}" />
-								<h:commandButton styleClass="down_button_link" rendered="#{page_index.getIsPageExists(0)}" value="#{page_index.getPageNumber(0)}" action="#{page_index.setDiffPage(0)}" />
+								<h:commandButton styleClass="down_button_link current" rendered="#{page_index.getIsPageExists(0)}" value="#{page_index.getPageNumber(0)}" action="#{page_index.setDiffPage(0)}" />
 								<h:commandButton styleClass="down_button_link" rendered="#{page_index.getIsPageExists(1)}" value="#{page_index.getPageNumber(1)}" action="#{page_index.setDiffPage(1)}" />
 								<h:commandButton styleClass="down_button_link" value="&#8594;" action="#{page_index.setPageCount()}" />
 							</h:form>

@@ -36,12 +36,14 @@
 									<ul class="list">
 										<ui:repeat value="#{page_concert.getCurrentConcert().getTracks()}" var="track">
 										<li>
-											<h:form style="float: left;">
-												<h:commandButton styleClass="group_consist_author" value="#{track.getGroup().getName()}" action="#{page_group.setCurrentGroup(track.getGroup().getId())}" />
-											</h:form>
-											<h:form style="float: left; padding-left: 12px;">
-												<h:commandButton styleClass="group_consist_author" value="#{track.getName()}" action="#{page_album.setCurrentAlbum(track.getAlbum().getId())}" />
-											</h:form>
+											<div style="overflow: hidden;padding-left: 10px;">
+												<h:form style="float: left;">
+													<h:commandButton styleClass="group_consist_author" value="#{track.getGroup().getName()}" action="#{page_group.setCurrentGroup(track.getGroup().getId())}" />
+												</h:form>
+												<h:form style="float: left; padding-left: 12px;">
+													<h:commandButton styleClass="group_consist_author" value="#{track.getName()}" action="#{page_album.setCurrentAlbum(track.getAlbum().getId())}" />
+												</h:form>
+											</div>
 										</li>
 										</ui:repeat>
 									</ul>
